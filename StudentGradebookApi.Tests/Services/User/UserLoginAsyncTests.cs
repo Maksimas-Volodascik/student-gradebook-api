@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using StudentGradebookApi.DTOs.Users;
 using StudentGradebookApi.Models;
@@ -20,7 +21,19 @@ namespace StudentGradebookApi.Tests.Services.User
 
         public UserLoginAsyncTests() {
             _mockUserRepo = new Mock<IUsersRepository>();
-            _userService = new UserService(null, _mockUserRepo.Object);
+
+            var inMemorySettings = new Dictionary<string, string>
+            {
+                { "AppSettings:Token", "very_long_secret_key_very_long_secret_key_very_long_secret_key_123456789" },
+                { "AppSettings:Issuer", "TestIssuer" },
+                { "AppSettings:Audience", "TestAudience" }
+            };
+
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+
+            _userService = new UserService(configuration, _mockUserRepo.Object);
         }
 
         public static class UserBuilder
@@ -38,25 +51,30 @@ namespace StudentGradebookApi.Tests.Services.User
         [Fact]
         public async Task LoginAsync_ValidCredentials_ReturnsAccessToken()
         {
-            //Arrange
+            // Arrange
             var loginDto = UserBuilder.Build();
+
             var user = new WebUsers
             {
                 Id = 1,
                 Email = loginDto.Email,
-                PasswordHash = new PasswordHasher<WebUsers>().HashPassword(null, loginDto.Password)
+                Role = "demo"
             };
+
+            user.PasswordHash = new PasswordHasher<WebUsers>()
+                .HashPassword(user, loginDto.Password);
 
             _mockUserRepo.Setup(u => u.GetByEmailAsync(loginDto.Email))
                 .ReturnsAsync(user);
 
-            //Act
+            // Act
             var result = await _userService.LoginAsync(loginDto);
 
-            //Assert
+            // Assert
             Assert.True(result.IsSuccess);
             Assert.NotNull(result.Data);
-            
+            Assert.False(string.IsNullOrEmpty(result.Data.AccessToken));
+
             _mockUserRepo.Verify(u => u.GetByEmailAsync(loginDto.Email), Times.Once);
         }
 
