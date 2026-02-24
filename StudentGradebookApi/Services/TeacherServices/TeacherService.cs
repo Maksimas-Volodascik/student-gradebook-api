@@ -32,6 +32,7 @@ namespace StudentGradebookApi.Services.TeacherServices
             newUser.Email = teacherData.Email;
             newUser.Password = teacherData.Password;
             newUser.Role = "teacher";
+
             var registeredUser = await _userService.RegisterAsync(newUser);
             if (!registeredUser.IsSuccess) return Result<Teachers>.Failure(registeredUser.Error);
 

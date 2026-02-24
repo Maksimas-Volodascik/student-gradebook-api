@@ -31,7 +31,6 @@
     <Folder Include="Services\Class\" />
     <Folder Include="Services\Subject\" />
     <Folder Include="Services\Student\" />
-    <Folder Include="Services\Teacher\" />
   </ItemGroup>
 
 </Project>
