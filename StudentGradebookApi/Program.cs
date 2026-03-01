@@ -74,10 +74,10 @@ namespace StudentGradebookApi
 
             builder.Host.UseSerilog();
             //
-
-            //AutoMapper
-            builder.Services.AddAutoMapper(cfg => { }, typeof(StudentProfile).Assembly);
-            //
+  
+            builder.Services.AddCustomRateLimiting(); //Rate Limit
+            
+            builder.Services.AddAutoMapper(cfg => { }, typeof(StudentProfile).Assembly); //AutoMapper
 
             builder.Services.AddCors(options =>
             {
@@ -114,9 +114,14 @@ namespace StudentGradebookApi
                 app.MapScalarApiReference();
             }
             app.UseCors("AllowFrontend");
+
             app.UseHttpsRedirection();
 
             app.UseMiddleware<LoggingMiddleware>();
+
+            app.UseRateLimiter();
+
+            app.MapControllers().RequireRateLimiting("fixed");
 
             app.UseAuthentication();
 
@@ -125,8 +130,6 @@ namespace StudentGradebookApi
             app.MapControllers();
 
             app.Run();
-
-            
         }
     }
 }
