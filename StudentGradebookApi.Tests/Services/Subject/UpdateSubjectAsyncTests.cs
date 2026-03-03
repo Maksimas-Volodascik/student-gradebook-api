@@ -13,13 +13,13 @@ namespace StudentGradebookApi.Tests.Services.Subject
 {
     public class UpdateSubjectAsyncTests
     {
-        private readonly Mock<ISubjectsRepository> _mockRepository;
+        private readonly Mock<ISubjectsRepository> _mockSubjRepository;
         private readonly SubjectsService _subjectsService;
 
         public UpdateSubjectAsyncTests()
         {
-            _mockRepository = new Mock<ISubjectsRepository>();
-            _subjectsService = new SubjectsService(_mockRepository.Object);
+            _mockSubjRepository = new Mock<ISubjectsRepository>();
+            _subjectsService = new SubjectsService(_mockSubjRepository.Object);
         }
 
         [Fact]
@@ -34,14 +34,14 @@ namespace StudentGradebookApi.Tests.Services.Subject
                 description = "Description about math"
             };
 
-            _mockRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>()))
+            _mockSubjRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>()))
                    .ReturnsAsync(subject);
 
             var result = await _subjectsService.UpdateSubjectAsync(1, dto);
 
             Assert.True(result.IsSuccess);
-            _mockRepository.Verify(r => r.Update(subject), Times.Once);
-            _mockRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
+            _mockSubjRepository.Verify(r => r.Update(subject), Times.Once);
+            _mockSubjRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace StudentGradebookApi.Tests.Services.Subject
             var result = await _subjectsService.UpdateSubjectAsync(1, dto);
 
             Assert.False(result.IsSuccess);
-            _mockRepository.Verify(r => r.Update(It.IsAny<Subjects>()), Times.Never);
+            _mockSubjRepository.Verify(r => r.Update(It.IsAny<Subjects>()), Times.Never);
         }
 
         [Fact]
@@ -70,12 +70,13 @@ namespace StudentGradebookApi.Tests.Services.Subject
                 description = "Description about math"
             };
 
-            _mockRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>()))
+            _mockSubjRepository.Setup(r => r.GetByIdAsync(It.IsAny<int>()))
                    .ReturnsAsync((Subjects)null);
 
             var result = await _subjectsService.UpdateSubjectAsync(1, dto);
 
             Assert.False(result.IsSuccess);
+            _mockSubjRepository.Verify(r => r.Update(It.IsAny<Subjects>()), Times.Never);
         }
     }
 }

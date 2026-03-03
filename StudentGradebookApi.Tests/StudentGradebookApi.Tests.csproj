@@ -32,7 +32,6 @@
     <Folder Include="Controllers\" />
     <Folder Include="Services\Grade\" />
     <Folder Include="Services\Class\" />
-    <Folder Include="Services\Student\" />
   </ItemGroup>
 
 </Project>

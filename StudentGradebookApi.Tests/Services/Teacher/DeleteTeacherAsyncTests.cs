@@ -30,21 +30,6 @@ namespace StudentGradebookApi.Tests.Services.Teacher
             _teacherService = new TeacherService(_teacherRepMock.Object, _userServiceMock.Object, _classSubjMock.Object);
         }
 
-        public static class TeacherDTOBuilder
-        {
-            public static TeacherRequestDTO Build()
-            {
-                return new TeacherRequestDTO
-                {
-                    Email = "email@email.com",
-                    Password = "password123",
-                    FirstName = "Jim",
-                    LastName = "Jimmy",
-                    ClassSubjectId = 1
-                };
-            }
-        }
-
         [Fact]
         public async Task DeleteTeacherAsync_TeacherExistsAndUserDeleted_ReturnsSuccess()
         {
