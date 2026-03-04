@@ -38,7 +38,7 @@ namespace StudentGradebookApi.Services.GradesServices
 
             Grades createGrade = new Grades();
             createGrade.GradingDate = newGrade.gradingDate;
-            createGrade.Grade_Type = newGrade.gradeType;
+            createGrade.Grade_Type = newGrade.gradeType.ToLower();
             createGrade.Score = newGrade.score;
             createGrade.EnrollmentId = newGrade.enrollmentId;
 
@@ -65,7 +65,7 @@ namespace StudentGradebookApi.Services.GradesServices
                 return Result.Failure(Errors.GradeErrors.ScoreOutOfRange);
 
             var allowedGradeTypes = new[] { "default", "test", "exam", "project" };
-            if (string.IsNullOrEmpty(grade.gradeType) || !allowedGradeTypes.Contains(grade.gradeType))
+            if (string.IsNullOrEmpty(grade.gradeType) || !allowedGradeTypes.Contains(grade.gradeType, StringComparer.OrdinalIgnoreCase))
                 return Result.Failure(Errors.GradeErrors.GradeTypeInvalid); 
 
             if (grade.gradingDate == default(DateTime))
