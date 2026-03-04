@@ -27,14 +27,14 @@ namespace StudentGradebookApi.Controllers
         [HttpPost]
         public async Task<ActionResult<NewGradeDTO>> NewGrade(NewGradeDTO newGrade)
         {
-            await _gradesService.AddGrade(newGrade);
+            await _gradesService.AddGradeAsync(newGrade);
             return Ok();
         }
 
         [HttpPatch]
         public async Task<ActionResult<Grades>> EditGrade(NewGradeDTO newGrade)
         {
-            var response = await _gradesService.EditGrade(newGrade);
+            var response = await _gradesService.EditGradeAsync(newGrade);
             return Ok(response);
         }
     }

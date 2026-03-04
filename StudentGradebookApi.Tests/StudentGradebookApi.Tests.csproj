@@ -30,8 +30,9 @@
   <ItemGroup>
     <Folder Include="Repositories\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Services\Grade\" />
-    <Folder Include="Services\Class\" />
+    <Folder Include="Services\Classes\" />
+    <Folder Include="Services\Enrollments\" />
+    <Folder Include="Services\ClassSubjects\" />
   </ItemGroup>
 
 </Project>
