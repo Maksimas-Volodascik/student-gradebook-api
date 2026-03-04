@@ -8,7 +8,7 @@ namespace StudentGradebookApi.Services.GradesServices
     {
         Task<Result<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGradesBySubjectId(int year, int month, int classSubjectId);
         Task<Result<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGradesByStudentId(int year, int month);
-        Task<Result> AddGrade(NewGradeDTO newGrade);
-        Task<Result> EditGrade(NewGradeDTO newGrade);
+        Task<Result> AddGradeAsync(NewGradeDTO newGrade);
+        Task<Result> EditGradeAsync(NewGradeDTO newGrade);
     }
 }

@@ -15,9 +15,9 @@ namespace StudentGradebookApi.Services.GradesServices
             _gradesRepository = gradesRepository;
         }
 
-        public async Task<Result> EditGrade(NewGradeDTO newGrade)
+        public async Task<Result> EditGradeAsync(NewGradeDTO newGrade)
         {
-            var valid = ValidateTeacherData(newGrade);
+            var valid = ValidateGradeData(newGrade);
             if (!valid.IsSuccess) return Result.Failure(valid.Error);
 
             Grades grade = await _gradesRepository.GetGradeByDateAndEnrollmentId(newGrade.gradingDate.Date, newGrade.enrollmentId);
@@ -31,9 +31,9 @@ namespace StudentGradebookApi.Services.GradesServices
             return Result.Success();
         }
 
-        public async Task<Result> AddGrade(NewGradeDTO newGrade)
+        public async Task<Result> AddGradeAsync(NewGradeDTO newGrade)
         {
-            var valid = ValidateTeacherData(newGrade);
+            var valid = ValidateGradeData(newGrade);
             if (!valid.IsSuccess) return Result.Failure(valid.Error!);
 
             Grades createGrade = new Grades();
@@ -59,7 +59,7 @@ namespace StudentGradebookApi.Services.GradesServices
             return Result<IEnumerable<StudentGradesBySubjectDTO>>.Success(await _gradesRepository.GetStudentGradesBySubjectId(year, month, classSubjectId));
         }
 
-        public Result ValidateTeacherData(NewGradeDTO grade)
+        public Result ValidateGradeData(NewGradeDTO grade)
         {
             if (grade.score > 10)
                 return Result.Failure(Errors.GradeErrors.ScoreOutOfRange);
