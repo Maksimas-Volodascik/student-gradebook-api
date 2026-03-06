@@ -50,13 +50,13 @@ namespace StudentGradebookApi.Services.ClassesServices
             var valid = ValidateTeacherData(classesContentsDTO);
             if (!valid.IsSuccess) return Result.Failure(valid.Error!);
 
-            Classes classes = await _classesRepository.GetByIdAsync(id);
-            if (classes == null) return Result.Failure(Errors.ClassesErrors.ClassNotFound);
+            var classes = await GetClassByIdAsync(id);
+            if (!classes.IsSuccess) return Result.Failure(classes.Error!);
 
-            classes.Room = classesContentsDTO.room;
-            classes.AcademicYear = classesContentsDTO.academicYear;
+            classes.Data.Room = classesContentsDTO.room;
+            classes.Data.AcademicYear = classesContentsDTO.academicYear;
 
-            _classesRepository.Update(classes);
+            _classesRepository.Update(classes.Data);
             await _classesRepository.SaveChangesAsync();
 
             return Result.Success();
