@@ -15,11 +15,10 @@ namespace StudentGradebookApi.Services.TeacherServices
     {
         private readonly ITeachersRepository _teachersRepository;
         private readonly IUserService _userService;
-        private readonly IClassSubjectsService _classSubjectsService;
-        public TeacherService(ITeachersRepository teachersRepository, IUserService userService, IClassSubjectsService classSubjectsService) { 
+        
+        public TeacherService(ITeachersRepository teachersRepository, IUserService userService) { 
             _teachersRepository = teachersRepository;
             _userService = userService;
-            _classSubjectsService = classSubjectsService;
         }
 
         public async Task<Result> AddTeacherAsync(TeacherRequestDTO teacherData)
@@ -46,10 +45,6 @@ namespace StudentGradebookApi.Services.TeacherServices
             await _teachersRepository.AddAsync(newTeacher);
             await _teachersRepository.SaveChangesAsync();
 
-            Teachers teacher = await _teachersRepository.GetTeacherByEmail(teacherData.Email);
-            if (teacher != null) 
-                await _classSubjectsService.EditSubjectClassTeacher(teacherData.ClassSubjectId, teacher.Id);
-
             return Result.Success();
         }
 
@@ -65,8 +60,6 @@ namespace StudentGradebookApi.Services.TeacherServices
             updateTeacher.FirstName = teacherData.FirstName;
             updateTeacher.LastName = teacherData.LastName;
             
-            await _classSubjectsService.EditSubjectClassTeacher(teacherData.ClassSubjectId, teacherId);
-
             _teachersRepository.Update(updateTeacher);
             await _teachersRepository.SaveChangesAsync();
 
