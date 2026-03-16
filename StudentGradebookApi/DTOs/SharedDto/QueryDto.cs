@@ -2,17 +2,41 @@
 {
     public class QueryDto
     {
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 20;
-        public int MaxSize = 100;
+        public int? PageSize { get; set; }
+        public int? PageNumber { get; set; }
+
+        public const int DefaultMaxSize = 100;
+        public const int DefaultPageSize = 20;
+        public const int DefaultPageNumber = 1;
+
         public int ValidPageSize
         {
-            
-            get { return (PageSize > MaxSize || PageSize < 1) ? 20 : PageSize; }
-        }
-        //sortBy
-        //sortDirection =asc/desc
+            get { 
+                if(PageSize == null)
+                {
+                    return DefaultPageSize;
+                }
 
-        //filter by
+                if (PageSize > DefaultMaxSize || PageSize < 1)
+                {
+                    return DefaultPageSize;
+                }
+
+                return PageSize.Value;
+            }
+        }
+
+        public int ValidPageNumber
+        {
+            get
+            {
+                if (PageNumber == null)
+                {
+                    return DefaultPageNumber;
+                }
+
+                return PageNumber.Value;
+            }
+        }
     }
 }

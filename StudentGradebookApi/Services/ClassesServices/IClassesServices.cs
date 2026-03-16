@@ -9,7 +9,6 @@ namespace StudentGradebookApi.Services.ClassesServices
         Task<Result> AddClassAsync(ClassesContentsDTO classesContentsDTO);
         Task<Result> UpdateClassAsync(int id, ClassesContentsDTO classesContentsDTO);
         Task<Result<Classes>> GetClassByIdAsync(int id);
-        Task<Result<IEnumerable<Classes>>> GetAllClassesAsync();
-        Task<Result<IEnumerable<Classes>>> GetClassesByYearAsync(string academicYear);
+        Task<Result<IEnumerable<Classes>>> GetAllClassesAsync(ClassesQueryDto classesQuery);
     }
 }

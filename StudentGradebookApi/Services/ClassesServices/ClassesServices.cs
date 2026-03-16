@@ -27,9 +27,9 @@ namespace StudentGradebookApi.Services.ClassesServices
             return Result.Success();
         }
 
-        public async Task<Result<IEnumerable<Classes>>> GetAllClassesAsync()
+        public async Task<Result<IEnumerable<Classes>>> GetAllClassesAsync(ClassesQueryDto classesQuery)
         {
-            return Result<IEnumerable<Classes>>.Success(await _classesRepository.GetAllAsync());
+            return Result<IEnumerable<Classes>>.Success(await _classesRepository.GetAllClasses(classesQuery));
         }
 
         public async Task<Result<Classes>> GetClassByIdAsync(int id)
@@ -38,11 +38,6 @@ namespace StudentGradebookApi.Services.ClassesServices
             if (classes == null) return Result<Classes>.Failure(Errors.ClassesErrors.ClassNotFound);
 
             return Result<Classes>.Success(classes);
-        }
-
-        public async Task<Result<IEnumerable<Classes>>> GetClassesByYearAsync(string academicYear)
-        {
-            return Result<IEnumerable<Classes>>.Success(await _classesRepository.GetClassesByYearAsync(academicYear));
         }
 
         public async Task<Result> UpdateClassAsync(int id, ClassesContentsDTO classesContentsDTO)

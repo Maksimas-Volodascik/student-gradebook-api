@@ -17,16 +17,9 @@ namespace StudentGradebookApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Classes>>> GetAllClassesAsync()
+        public async Task<ActionResult<IEnumerable<Classes>>> GetAllClassesAsync([FromQuery] ClassesQueryDto classesQuery)
         {
-            var response = await _classesServices.GetAllClassesAsync();
-            return Ok(response);
-        }
-
-        [HttpGet("year/{year}")]
-        public async Task<ActionResult<IEnumerable<Classes>>> GetClassesByYearAsync(string year)
-        {
-            var response = await _classesServices.GetClassesByYearAsync(year);
+            var response = await _classesServices.GetAllClassesAsync(classesQuery);
             return Ok(response);
         }
 
