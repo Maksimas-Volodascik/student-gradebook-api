@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Humanizer;
+using Microsoft.EntityFrameworkCore;
 using StudentGradebookApi.Data;
 using StudentGradebookApi.DTOs.SubjectClass;
 using StudentGradebookApi.DTOs.Teachers;
@@ -14,25 +15,36 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
             _context = context;
         }
 
-        public async Task<IEnumerable<TeacherDTO>> GetTeachersWithSubjectsAsync()
+        public async Task<IEnumerable<TeacherDTO>> GetTeachersWithSubjectsAsync(TeachersQueryDto queryDto)
         {
-            var query = await (from T in _context.Teachers
-                        join CS in _context.ClassSubjects on T.Id equals CS.TeacherId 
-                        join Subject in _context.Subjects on CS.SubjectId equals Subject.Id 
-                        join Class in _context.Classes on CS.ClassId equals Class.Id 
-                        select new
-                            {
-                                Id = T.Id,
-                                FirstName = T.FirstName,
-                                LastName = T.LastName,
-                                AcademicYear = Class.AcademicYear,
-                                Room = Class.Room,
-                                SubjectName = Subject.SubjectName,
-                                SubjectCode = Subject.SubjectCode
-                            }
-                        ).ToListAsync();
+            // todo: create teacher query and apply pagination (e.g. 10 teachers) Later use 10 teaches and apply grouping.
 
-            var groupData = query
+            var query = from T in _context.Teachers
+                        join CS in _context.ClassSubjects on T.Id equals CS.TeacherId
+                        join Subject in _context.Subjects on CS.SubjectId equals Subject.Id
+                        join Class in _context.Classes on CS.ClassId equals Class.Id
+                        select new
+                        {
+                            Id = T.Id,
+                            FirstName = T.FirstName,
+                            LastName = T.LastName,
+                            AcademicYear = Class.AcademicYear,
+                            Room = Class.Room,
+                            SubjectName = Subject.SubjectName,
+                            SubjectCode = Subject.SubjectCode
+                        };
+
+            if(queryDto.SubjectCode != null) { query = query.Where(x => x.SubjectCode == queryDto.SubjectCode); }
+            
+            if(queryDto.SubjectName != null) { query = query.Where(x => x.SubjectName == queryDto.SubjectName); }
+            
+            if(queryDto.Room != null) { query = query.Where(x => x.Room == queryDto.Room); }
+            
+            if(queryDto.AcademicYear != null) { query = query.Where(x => x.AcademicYear.StartsWith(queryDto.AcademicYear)); }
+
+            var result = await query.ToListAsync();
+
+            var groupData = result
                 .GroupBy(x => new { x.Id, x.FirstName, x.LastName })
                 .Select(g => new TeacherDTO
                 {

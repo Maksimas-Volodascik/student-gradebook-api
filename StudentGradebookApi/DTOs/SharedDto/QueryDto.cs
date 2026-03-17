@@ -1,4 +1,6 @@
-﻿namespace StudentGradebookApi.DTOs.SharedDto
+﻿using System.Text.Json.Serialization;
+
+namespace StudentGradebookApi.DTOs.SharedDto
 {
     public class QueryDto
     {
@@ -9,7 +11,7 @@
         public const int DefaultPageSize = 20;
         public const int DefaultPageNumber = 1;
 
-        public int ValidPageSize
+        internal int ValidPageSize
         {
             get { 
                 if(PageSize == null)
@@ -26,7 +28,7 @@
             }
         }
 
-        public int ValidPageNumber
+        internal int ValidPageNumber
         {
             get
             {

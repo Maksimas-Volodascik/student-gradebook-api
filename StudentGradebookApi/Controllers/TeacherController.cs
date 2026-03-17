@@ -17,9 +17,9 @@ namespace StudentGradebookApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<TeacherDTO>>> GetTeachers()
+        public async Task<ActionResult<List<TeacherDTO>>> GetTeachers([FromQuery] TeachersQueryDto queryDto)
         {
-            var response = await _teacherService.GetAllTeachersAsync();
+            var response = await _teacherService.GetAllTeachersAsync(queryDto);
             return Ok(response);
         }
 
