@@ -1,12 +1,13 @@
-﻿namespace StudentGradebookApi.DTOs.Teachers
+﻿using StudentGradebookApi.DTOs.Grades;
+using StudentGradebookApi.DTOs.SubjectClass;
+
+namespace StudentGradebookApi.DTOs.Teachers
 {
     public class TeacherDTO
     {
-        //DTO For 'Get Teacher'
         public int Id { get; set; }
         public string FirstName { get; set; } = string.Empty;   
         public string LastName { get; set; } = string.Empty;
-        public string? SubjectName { get; set; }
-        public int? ClassSubjectId { get; set; }
+        public List<ClassSubjectDTO> ClassSubjects { get; set; } = new List<ClassSubjectDTO>();
     }
 }

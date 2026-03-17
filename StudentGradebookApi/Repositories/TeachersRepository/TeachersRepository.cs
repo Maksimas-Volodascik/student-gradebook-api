@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentGradebookApi.Data;
+using StudentGradebookApi.DTOs.SubjectClass;
 using StudentGradebookApi.DTOs.Teachers;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.Main;
@@ -15,28 +16,39 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
 
         public async Task<IEnumerable<TeacherDTO>> GetTeachersWithSubjectsAsync()
         {
-            var query = from T in _context.Teachers
+            var query = await (from T in _context.Teachers
+                        join CS in _context.ClassSubjects on T.Id equals CS.TeacherId 
+                        join Subject in _context.Subjects on CS.SubjectId equals Subject.Id 
+                        join Class in _context.Classes on CS.ClassId equals Class.Id 
+                        select new
+                            {
+                                Id = T.Id,
+                                FirstName = T.FirstName,
+                                LastName = T.LastName,
+                                AcademicYear = Class.AcademicYear,
+                                Room = Class.Room,
+                                SubjectName = Subject.SubjectName,
+                                SubjectCode = Subject.SubjectCode
+                            }
+                        ).ToListAsync();
 
-                        join CS in _context.ClassSubjects
-                            on T.Id equals CS.TeacherId
-                            into teacherClassSubjects
-                        from CS in teacherClassSubjects.DefaultIfEmpty()
+            var groupData = query
+                .GroupBy(x => new { x.Id, x.FirstName, x.LastName })
+                .Select(g => new TeacherDTO
+                {
+                    Id = g.Key.Id,
+                    FirstName = g.Key.FirstName,
+                    LastName = g.Key.LastName,
+                    ClassSubjects = g.Select(x => new ClassSubjectDTO
+                    {
+                        AcademicYear = x.AcademicYear,
+                        Room = x.Room,
+                        SubjectCode = x.SubjectCode,
+                        SubjectName = x.SubjectName
+                    }).ToList()
+                }).ToList();
 
-                        join S in _context.Subjects
-                            on CS.SubjectId equals S.Id
-                            into teacherSubjects
-                        from S in teacherSubjects.DefaultIfEmpty()
-
-                        select new TeacherDTO
-                        {
-                            Id = T.Id,
-                            FirstName = T.FirstName,
-                            LastName = T.LastName,
-                            SubjectName = S != null ? S.SubjectName : null,
-                            ClassSubjectId = CS != null ? CS.Id : null,
-                        };
-
-            return await query.ToListAsync();
+            return groupData;
         }
 
         public async Task<Teachers> GetTeacherByEmail(string email)
