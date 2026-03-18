@@ -5,6 +5,7 @@ using StudentGradebookApi.DTOs.SubjectClass;
 using StudentGradebookApi.DTOs.Teachers;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.Main;
+using System.Linq;
 
 namespace StudentGradebookApi.Repositories.TeachersRepository
 {
@@ -17,21 +18,35 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
 
         public async Task<IEnumerable<TeacherDTO>> GetTeachersWithSubjectsAsync(TeachersQueryDto queryDto)
         {
-            // todo: create teacher query and apply pagination (e.g. 10 teachers) Later use 10 teaches and apply grouping.
+            var teacherQuery = from teacher in _context.Teachers
+                               .Skip((queryDto.ValidPageNumber - 1) * queryDto.ValidPageSize)
+                               .Take(queryDto.ValidPageSize)
+                               select teacher;
+                               
 
-            var query = from T in _context.Teachers
-                        join CS in _context.ClassSubjects on T.Id equals CS.TeacherId
-                        join Subject in _context.Subjects on CS.SubjectId equals Subject.Id
-                        join Class in _context.Classes on CS.ClassId equals Class.Id
+            var query = from teacher in teacherQuery
+
+                        join classSubjects in _context.ClassSubjects 
+                            on teacher.Id equals classSubjects.TeacherId into classSubjectGroup
+                        from classSubject in classSubjectGroup.DefaultIfEmpty()
+
+                        join subjects in _context.Subjects 
+                            on classSubject != null ? classSubject.SubjectId : 0 equals subjects.Id into subjectGroup
+                        from subject in subjectGroup.DefaultIfEmpty()
+
+                        join classes in _context.Classes 
+                            on classSubject != null ? classSubject.ClassId : 0 equals classes.Id into classGroup
+                        from @class in classGroup.DefaultIfEmpty()
+
                         select new
                         {
-                            Id = T.Id,
-                            FirstName = T.FirstName,
-                            LastName = T.LastName,
-                            AcademicYear = Class.AcademicYear,
-                            Room = Class.Room,
-                            SubjectName = Subject.SubjectName,
-                            SubjectCode = Subject.SubjectCode
+                            Id = teacher.Id,
+                            FirstName = teacher.FirstName,
+                            LastName = teacher.LastName,
+                            AcademicYear = @class != null ? @class.AcademicYear : null,
+                            Room = @class != null ? @class.Room : 0,
+                            SubjectName = subject != null ? subject.SubjectName : null,
+                            SubjectCode = subject != null ? subject.SubjectCode : null
                         };
 
             if(queryDto.SubjectCode != null) { query = query.Where(x => x.SubjectCode == queryDto.SubjectCode); }
