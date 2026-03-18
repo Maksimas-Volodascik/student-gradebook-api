@@ -6,6 +6,8 @@ namespace StudentGradebookApi.DTOs.SharedDto
     {
         public int? PageSize { get; set; }
         public int? PageNumber { get; set; }
+        public string SortBy { get; set; } = string.Empty;
+        public bool SortDescending { get; set; } = false;
 
         public const int DefaultMaxSize = 100;
         public const int DefaultPageSize = 20;

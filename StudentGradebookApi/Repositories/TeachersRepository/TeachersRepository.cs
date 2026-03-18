@@ -5,7 +5,7 @@ using StudentGradebookApi.DTOs.SubjectClass;
 using StudentGradebookApi.DTOs.Teachers;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.Main;
-using System.Linq;
+using System.Linq.Dynamic.Core;
 
 namespace StudentGradebookApi.Repositories.TeachersRepository
 {
@@ -22,7 +22,6 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
                                .Skip((queryDto.ValidPageNumber - 1) * queryDto.ValidPageSize)
                                .Take(queryDto.ValidPageSize)
                                select teacher;
-                               
 
             var query = from teacher in teacherQuery
 
@@ -57,8 +56,19 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
             
             if(queryDto.AcademicYear != null) { query = query.Where(x => x.AcademicYear.StartsWith(queryDto.AcademicYear)); }
 
-            var result = await query.ToListAsync();
+            try
+            {
+                if (!string.IsNullOrEmpty(queryDto.SortBy))
+                {
+                    query = query.OrderBy(queryDto.SortBy + " " + (queryDto.SortDescending ? "descending" : "ascending"));
+                }
+            }
+            catch (Exception)
+            {
+                // log an error
+            }
 
+            var result = await query.ToListAsync();
             var groupData = result
                 .GroupBy(x => new { x.Id, x.FirstName, x.LastName })
                 .Select(g => new TeacherDTO
@@ -78,7 +88,7 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
             return groupData;
         }
 
-        public async Task<Teachers> GetTeacherByEmail(string email)
+        public async Task<Teachers> GetTeacherByEmail(string email) //not needed
         {
             Teachers? teacher = await(from T in _context.Teachers
                                       join WU in _context.WebUsers
