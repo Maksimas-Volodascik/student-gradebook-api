@@ -18,9 +18,9 @@ namespace StudentGradebookApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGradesBySubject(int year, int month, int classSubjectId)
+        public async Task<ActionResult<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGrades([FromQuery] GradesQueryDto queryDto)
         {
-            var studentGrades = await _gradesService.GetStudentGradesBySubjectId(year, month, classSubjectId);
+            var studentGrades = await _gradesService.GetStudentGradesBySubjectId(queryDto);
             return Ok(studentGrades);
         }
 

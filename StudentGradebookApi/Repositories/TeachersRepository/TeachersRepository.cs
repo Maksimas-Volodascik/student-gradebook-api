@@ -65,7 +65,7 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
             }
             catch (Exception)
             {
-                // log an error
+                
             }
 
             var result = await query.ToListAsync();

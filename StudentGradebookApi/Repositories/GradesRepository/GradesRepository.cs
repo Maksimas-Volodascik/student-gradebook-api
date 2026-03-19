@@ -6,6 +6,7 @@ using StudentGradebookApi.DTOs.Enrollments;
 using StudentGradebookApi.DTOs.Grades;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.Main;
+using System.Security.Claims;
 
 namespace StudentGradebookApi.Repositories.GradesRepository
 {
@@ -29,47 +30,57 @@ namespace StudentGradebookApi.Repositories.GradesRepository
             return null;
         }
 
-        public async Task<IEnumerable<StudentGradesBySubjectDTO>> GetStudentGradesBySubjectId(int year, int month, int classSubjectId)
+        public async Task<IEnumerable<StudentGradesBySubjectDTO>> GetStudentGradesBySubjectId(GradesQueryDto queryDto)
         {
-            var query = from S in _context.Students
+            var studentQuery = from student in _context.Students
+                               .Skip((queryDto.ValidPageNumber - 1) * queryDto.ValidPageSize)
+                               .Take(queryDto.ValidPageSize)
+                               select student;
 
-                        join E in _context.Enrollments
-                            on S.Id equals E.StudentID into enrollments
-                        from E in enrollments
-                        .Where(e => e.ClassSubjectId == classSubjectId)
+            var gradesQuery = from student in studentQuery
 
-                        join G in _context.Grades
-                             on E.Id equals G.EnrollmentId into grades
-                        from G in grades
-                        .Where(g => g.GradingDate.Year == year && g.GradingDate.Month == month)
-                        .DefaultIfEmpty()
+                              join enrollments in _context.Enrollments
+                                  on student.Id equals enrollments.StudentID into enrollments
+                              from enrollment in enrollments
+                              .DefaultIfEmpty()
+                                  //.Where(e => e.ClassSubjectId == queryDto.ClassSubjectId)
 
-                        group G by new
-                        {
-                            S.FirstName,
-                            S.LastName,
-                            E.ClassSubjectId,
-                            E.Id
-                        } into stud
+                              join grades in _context.Grades
+                                   on enrollment.Id equals grades.EnrollmentId into grades
+                              from grade in grades
+                              .Where(g => g.GradingDate.Year == queryDto.GradingYear && g.GradingDate.Month == queryDto.GradingMonth)
+                              .DefaultIfEmpty()
 
-                        select new StudentGradesBySubjectDTO
-                        {
-                            FirstName = stud.Key.FirstName,
-                            LastName = stud.Key.LastName,
-                            ClassSubjectId = stud.Key.ClassSubjectId,
-                            EnrollmentId = stud.Key.Id,
-                            Grades = stud
-                            .Where(x => x != null)
-                            .Select(x => new GradesListDTO
+                              select new
+                              {
+                                FirstName = student.FirstName,
+                                LastName = student.LastName,
+                                ClassSubjectId = enrollment != null ? enrollment.ClassSubjectId : 0,
+                                EnrollmentId = enrollment != null ? enrollment.Id : 0,
+                                Score = grade != null ? grade.Score : 0,
+                                Grade_Type = grade != null ? grade.Grade_Type : null,
+                                GradingDate = grade != null ? grade.GradingDate : default
+                              };
+
+            var result = await gradesQuery.ToListAsync();
+
+            var groupData = result
+                            .GroupBy(x => new {x.FirstName, x.LastName, x.ClassSubjectId, x.EnrollmentId})
+                            .Select(g => new StudentGradesBySubjectDTO
                             {
-                                Score = x.Score,
-                                Grade_Type = x.Grade_Type,
-                                GradingDate = x.GradingDate
-                            })
-                            .ToList()
-                        };
-
-            return await query.ToListAsync(); 
+                                FirstName = g.Key.FirstName,
+                                LastName = g.Key.LastName,
+                                ClassSubjectId = g.Key.ClassSubjectId,
+                                EnrollmentId = g.Key.EnrollmentId,
+                                Grades = g.Select(x => new GradesListDTO
+                                {
+                                    Score = x.Score,
+                                    Grade_Type = x.Grade_Type,
+                                    GradingDate = x.GradingDate,
+                                }).ToList(),
+                            }).ToList();
+            
+            return groupData; 
         }
     }
 }
