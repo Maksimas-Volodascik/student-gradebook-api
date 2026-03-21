@@ -6,6 +6,6 @@ namespace StudentGradebookApi.Repositories.ClassesRepository
 {
     public interface IClassesRepository : IRepositoryBase<Classes>
     {
-        Task<IEnumerable<Classes>> GetAllClasses(ClassesQueryDto classesQuery);
+        Task<IEnumerable<ClassSubjectsDto>> GetAllClasses(ClassesQueryDto classesQuery);
     }
 }

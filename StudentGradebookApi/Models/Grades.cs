@@ -13,7 +13,6 @@ namespace StudentGradebookApi.Models
         public DateTimeOffset GradingDate { get; set; } = DateTimeOffset.Now;
         public int EnrollmentId { get; set; }
         public Enrollments Enrollments { get; set; } = null!;
-
         public DateTime GradingDay { get; private set; } //Date with no time (computes from GradingDate)
     }
 }

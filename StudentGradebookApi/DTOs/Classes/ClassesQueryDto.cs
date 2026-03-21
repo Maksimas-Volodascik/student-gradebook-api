@@ -5,13 +5,7 @@ namespace StudentGradebookApi.DTOs.Classes
     public class ClassesQueryDto : QueryDto
     {
         public string? StartingYear { get; set; }
-        //totalCount
-
-        //sortBy
-        //sortDirection =asc/desc
-
-        //filter by
-
-
+        public int? Room { get; set; }
+        public string? SubjectName { get; set; }
     }
 }
