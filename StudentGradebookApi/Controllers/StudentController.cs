@@ -19,13 +19,10 @@ namespace StudentGradebookApi.Controllers
         }
         
         [HttpGet()]
-        public async Task<ActionResult<IEnumerable<StudentList>>> GetStudents()
+        public async Task<ActionResult<IEnumerable<StudentList>>> GetStudents([FromQuery] StudentsQueryDto queryDto)
         {
-            var students = await _studentService.GetAllStudentsAsync();
-
-            var response = _mapper.Map<IEnumerable<StudentList>>(students.Data);
-
-            return Ok(response);
+            var students = await _studentService.GetAllStudentsAsync(queryDto);
+            return Ok(students);
         }
 
         [HttpGet("{id}")]
@@ -38,16 +35,6 @@ namespace StudentGradebookApi.Controllers
             StudentList response = _mapper.Map<StudentList>(student.Data);
 
             return Ok(response);
-        }
-
-        [HttpGet("/email/{email}")]
-        public async Task<ActionResult<StudentList>> GetEmail(string email)
-        {
-            var student = await _studentService.GetStudentByEmailAsync(email);
-
-            if (!student.IsSuccess) return NotFound(student.Error);
-
-            return Ok(student);
         }
 
         [HttpPost()]

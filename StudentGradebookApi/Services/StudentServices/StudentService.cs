@@ -74,9 +74,9 @@ namespace StudentGradebookApi.Services.StudentServices
             return Result.Success();
         }
 
-        public async Task<Result<IEnumerable<Students>>> GetAllStudentsAsync()
+        public async Task<Result<IEnumerable<StudentEnrolledSubject>>> GetAllStudentsAsync(StudentsQueryDto queryDto)
         {
-            return Result<IEnumerable<Students>>.Success(await _studentsRepository.GetAllAsync());
+            return Result<IEnumerable<StudentEnrolledSubject>>.Success(await _studentsRepository.GetStudentEnrolledSubjects(queryDto));
         }
 
         public async Task<Result<Students>> GetStudentByEmailAsync(string email)

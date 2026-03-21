@@ -51,12 +51,12 @@ namespace StudentGradebookApi.Services.GradesServices
         public async Task<Result<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGradesByStudentId(int year, int month)
         {
             //TODO: add call for student grades by ID
-            return Result<IEnumerable<StudentGradesBySubjectDTO>>.Success(await _gradesRepository.GetStudentGradesBySubjectId(year, month, 1));
+            return Result<IEnumerable<StudentGradesBySubjectDTO>>.Failure(Errors.GradeErrors.GradeTypeInvalid);
         }
 
-        public async Task<Result<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGradesBySubjectId(int year, int month, int classSubjectId)
+        public async Task<Result<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGradesBySubjectId(GradesQueryDto queryDto)
         {
-            return Result<IEnumerable<StudentGradesBySubjectDTO>>.Success(await _gradesRepository.GetStudentGradesBySubjectId(year, month, classSubjectId));
+            return Result<IEnumerable<StudentGradesBySubjectDTO>>.Success(await _gradesRepository.GetStudentGradesBySubjectId(queryDto));
         }
 
         public Result ValidateGradeData(NewGradeDTO grade)

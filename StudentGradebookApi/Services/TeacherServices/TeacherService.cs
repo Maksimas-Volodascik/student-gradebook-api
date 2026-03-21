@@ -74,9 +74,9 @@ namespace StudentGradebookApi.Services.TeacherServices
             return Result<Teachers>.Success(response);
         }
 
-        public async Task<Result<IEnumerable<TeacherDTO>>> GetAllTeachersAsync()
+        public async Task<Result<IEnumerable<TeacherDTO>>> GetAllTeachersAsync(TeachersQueryDto queryDto)
         {
-            var response = await _teachersRepository.GetTeachersWithSubjectsAsync();
+            var response = await _teachersRepository.GetTeachersWithSubjectsAsync(queryDto);
             return Result<IEnumerable<TeacherDTO>>.Success(response);
         }
 

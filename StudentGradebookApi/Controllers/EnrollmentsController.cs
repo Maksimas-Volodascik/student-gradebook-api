@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.Enrollments;
 using StudentGradebookApi.DTOs.Grades;
+using StudentGradebookApi.DTOs.SharedDto;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Services.EnrollmentsServices;
 using StudentGradebookApi.Services.GradesServices;
@@ -22,11 +23,13 @@ namespace StudentGradebookApi.Controllers
             _enrollmentServices = enrollmentServices;
             _gradesServices = gradesServices;
         }
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StudentEnrollments>>> GetStudentEnrollments()
+        public async Task<ActionResult<IEnumerable<StudentEnrollments>>> GetStudentEnrollments([FromQuery] QueryDto queryDto)
         {
             int userId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            var response = await _enrollmentServices.GetStudentEnrollments(userId);
+            var response = await _enrollmentServices.GetStudentEnrollments(userId, queryDto);
+
             return Ok(response);
         }
 

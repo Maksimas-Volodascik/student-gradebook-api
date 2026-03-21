@@ -1,4 +1,5 @@
-﻿using StudentGradebookApi.DTOs.Subjects;
+﻿using StudentGradebookApi.DTOs.SharedDto;
+using StudentGradebookApi.DTOs.Subjects;
 using StudentGradebookApi.DTOs.Teachers;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.SubjectsRepository;
@@ -43,9 +44,9 @@ namespace StudentGradebookApi.Services.SubjectsService
 
         }
 
-        public async Task<Result<IEnumerable<Subjects>>> GetAllSubjectsAsync()
+        public async Task<Result<IEnumerable<Subjects>>> GetAllSubjectsAsync(QueryDto query)
         {
-            return Result<IEnumerable<Subjects>>.Success(await _subjectsRepository.GetAllAsync());
+            return Result<IEnumerable<Subjects>>.Success(await _subjectsRepository.GetAllSubjects(query));
         }
 
         public async Task<Result<Subjects>> GetSubjectByIdAsync(int id)

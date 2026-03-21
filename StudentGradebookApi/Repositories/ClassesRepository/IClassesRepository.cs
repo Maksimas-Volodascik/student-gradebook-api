@@ -1,11 +1,11 @@
-﻿using StudentGradebookApi.Models;
+﻿using StudentGradebookApi.DTOs.Classes;
+using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.Main;
 
 namespace StudentGradebookApi.Repositories.ClassesRepository
 {
     public interface IClassesRepository : IRepositoryBase<Classes>
     {
-        //GetClassesByYear
-        Task<IEnumerable<Classes>> GetClassesByYearAsync(string academicYear);
+        Task<IEnumerable<ClassSubjectsDto>> GetAllClasses(ClassesQueryDto classesQuery);
     }
 }

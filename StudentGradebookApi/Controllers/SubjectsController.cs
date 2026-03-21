@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudentGradebookApi.DTOs.SharedDto;
 using StudentGradebookApi.DTOs.Subjects;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Services.SubjectsService;
@@ -16,10 +17,11 @@ namespace StudentGradebookApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Subjects>>> GetAllSubjectsAsync()
+        public async Task<ActionResult<IEnumerable<Subjects>>> GetAllSubjectsAsync([FromQuery] QueryDto query)
         {
-            var subjects = await _subjectsService.GetAllSubjectsAsync();
-            return Ok(subjects);
+            var subjects = await _subjectsService.GetAllSubjectsAsync(query);
+
+            return Ok(subjects.Data);
         }
 
         [HttpGet("{id}")]

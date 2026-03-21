@@ -15,11 +15,11 @@ namespace StudentGradebookApi.Services.ClassesServices
             _classesRepository = classesRepository;
         }
 
-        public async Task<Result> AddClassAsync(ClassesContentsDTO classesContentsDTO)
+        public async Task<Result> AddClassAsync(NewClassDto classesContentsDTO)
         {
             Classes newClass = new Classes();
-            newClass.Room = classesContentsDTO.room;
-            newClass.AcademicYear = classesContentsDTO.academicYear;
+            newClass.Room = classesContentsDTO.Room;
+            newClass.AcademicYear = classesContentsDTO.AcademicYear;
 
             await _classesRepository.AddAsync(newClass);
             await _classesRepository.SaveChangesAsync();
@@ -27,9 +27,9 @@ namespace StudentGradebookApi.Services.ClassesServices
             return Result.Success();
         }
 
-        public async Task<Result<IEnumerable<Classes>>> GetAllClassesAsync()
+        public async Task<Result<IEnumerable<ClassSubjectsDto>>> GetAllClassesAsync(ClassesQueryDto classesQuery)
         {
-            return Result<IEnumerable<Classes>>.Success(await _classesRepository.GetAllAsync());
+            return Result<IEnumerable<ClassSubjectsDto>>.Success(await _classesRepository.GetAllClasses(classesQuery));
         }
 
         public async Task<Result<Classes>> GetClassByIdAsync(int id)
@@ -40,12 +40,7 @@ namespace StudentGradebookApi.Services.ClassesServices
             return Result<Classes>.Success(classes);
         }
 
-        public async Task<Result<IEnumerable<Classes>>> GetClassesByYearAsync(string academicYear)
-        {
-            return Result<IEnumerable<Classes>>.Success(await _classesRepository.GetClassesByYearAsync(academicYear));
-        }
-
-        public async Task<Result> UpdateClassAsync(int id, ClassesContentsDTO classesContentsDTO)
+        public async Task<Result> UpdateClassAsync(int id, NewClassDto classesContentsDTO)
         {
             var valid = ValidateTeacherData(classesContentsDTO);
             if (!valid.IsSuccess) return Result.Failure(valid.Error!);
@@ -53,8 +48,8 @@ namespace StudentGradebookApi.Services.ClassesServices
             var classes = await GetClassByIdAsync(id);
             if (!classes.IsSuccess) return Result.Failure(classes.Error!);
 
-            classes.Data.Room = classesContentsDTO.room;
-            classes.Data.AcademicYear = classesContentsDTO.academicYear;
+            classes.Data.Room = classesContentsDTO.Room;
+            classes.Data.AcademicYear = classesContentsDTO.AcademicYear;
 
             _classesRepository.Update(classes.Data);
             await _classesRepository.SaveChangesAsync();
@@ -62,12 +57,13 @@ namespace StudentGradebookApi.Services.ClassesServices
             return Result.Success();
         }
 
-        public Result ValidateTeacherData(ClassesContentsDTO classesContentsDTO)
+        public Result ValidateTeacherData(NewClassDto classesContentsDTO)
         {
-            if (!Regex.IsMatch(classesContentsDTO.academicYear, @"^(\d{4})-(\d{4})$") || int.Parse(classesContentsDTO.academicYear.Split('-')[1]) != int.Parse(classesContentsDTO.academicYear.Split('-')[0]) + 1)
+            if (!Regex.IsMatch(classesContentsDTO.AcademicYear, @"^(\d{4})-(\d{4})$") || 
+                int.Parse(classesContentsDTO.AcademicYear.Split('-')[1]) != int.Parse(classesContentsDTO.AcademicYear.Split('-')[0]) + 1)
                 return Result.Failure(Errors.ClassesErrors.InvalidClassesAcademicYear);
 
-            if (classesContentsDTO.room < 100 || classesContentsDTO.room > 1000)
+            if (classesContentsDTO.Room < 100 || classesContentsDTO.Room > 1000)
                 return Result.Failure(Errors.ClassesErrors.InvalidClassesRoom);
 
             return Result.Success();

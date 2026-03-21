@@ -15,19 +15,6 @@ namespace StudentGradebookApi.Controllers
         {
             _classSubjectsService = classSubjectsService;
         }
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClassSubjectDTO>>> GetAllClassSubjects()
-        {
-            var response = await _classSubjectsService.GetAllClassSubjectsAsync();
-            return Ok(response);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ClassSubjects>> GetClassSubjectById(int id)
-        {
-            var response = await _classSubjectsService.GetClassSubjectsByIdAsync(id);
-            return Ok(response);
-        }
 
         [HttpPatch]
         public async Task<ActionResult<CombineClassSubjectDTO>> EditClassSubjectTeacher(CombineClassSubjectDTO combineClassSubjectDTO)

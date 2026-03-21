@@ -7,7 +7,7 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
 {
     public interface ITeachersRepository : IRepositoryBase<Teachers>
     {
-        Task<IEnumerable<TeacherDTO>> GetTeachersWithSubjectsAsync();
+        Task<IEnumerable<TeacherDTO>> GetTeachersWithSubjectsAsync(TeachersQueryDto queryDto);
         Task<Teachers> GetTeacherByEmail(string email);
     }
 }

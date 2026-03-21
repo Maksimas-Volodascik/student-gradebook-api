@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Humanizer;
+using Microsoft.EntityFrameworkCore;
 using StudentGradebookApi.Data;
+using StudentGradebookApi.DTOs.SubjectClass;
 using StudentGradebookApi.DTOs.Teachers;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.Main;
+using System.Linq.Dynamic.Core;
 
 namespace StudentGradebookApi.Repositories.TeachersRepository
 {
@@ -13,33 +16,81 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
             _context = context;
         }
 
-        public async Task<IEnumerable<TeacherDTO>> GetTeachersWithSubjectsAsync()
+        public async Task<IEnumerable<TeacherDTO>> GetTeachersWithSubjectsAsync(TeachersQueryDto queryDto)
         {
-            var query = from T in _context.Teachers
+            var teacherQuery = from teacher in _context.Teachers
+                               .Where(x => (queryDto.FirstName == null || x.FirstName.StartsWith(queryDto.FirstName)) && 
+                               (queryDto.LastName == null || x.LastName.StartsWith(queryDto.LastName)))
+                               .Skip((queryDto.ValidPageNumber - 1) * queryDto.ValidPageSize)
+                               .Take(queryDto.ValidPageSize)
+                               select teacher;
 
-                        join CS in _context.ClassSubjects
-                            on T.Id equals CS.TeacherId
-                            into teacherClassSubjects
-                        from CS in teacherClassSubjects.DefaultIfEmpty()
+            var query = from teacher in teacherQuery
 
-                        join S in _context.Subjects
-                            on CS.SubjectId equals S.Id
-                            into teacherSubjects
-                        from S in teacherSubjects.DefaultIfEmpty()
+                        join classSubjects in _context.ClassSubjects 
+                            on teacher.Id equals classSubjects.TeacherId into classSubjectGroup
+                        from classSubject in classSubjectGroup.DefaultIfEmpty()
 
-                        select new TeacherDTO
+                        join subjects in _context.Subjects 
+                            on classSubject != null ? classSubject.SubjectId : 0 equals subjects.Id into subjectGroup
+                        from subject in subjectGroup.DefaultIfEmpty()
+
+                        join classes in _context.Classes 
+                            on classSubject != null ? classSubject.ClassId : 0 equals classes.Id into classGroup
+                        from @class in classGroup.DefaultIfEmpty()
+
+                        select new
                         {
-                            Id = T.Id,
-                            FirstName = T.FirstName,
-                            LastName = T.LastName,
-                            SubjectName = S != null ? S.SubjectName : null,
-                            ClassSubjectId = CS != null ? CS.Id : null,
+                            Id = teacher.Id,
+                            FirstName = teacher.FirstName,
+                            LastName = teacher.LastName,
+                            AcademicYear = @class != null ? @class.AcademicYear : null,
+                            Room = @class != null ? @class.Room : 0,
+                            SubjectName = subject != null ? subject.SubjectName : null,
+                            SubjectCode = subject != null ? subject.SubjectCode : null
                         };
 
-            return await query.ToListAsync();
+            if(queryDto.SubjectCode != null) { query = query.Where(x => x.SubjectCode == queryDto.SubjectCode); }
+            
+            if(queryDto.SubjectName != null) { query = query.Where(x => x.SubjectName == queryDto.SubjectName); }
+            
+            if(queryDto.Room != null) { query = query.Where(x => x.Room == queryDto.Room); }
+            
+            if(queryDto.AcademicYear != null) { query = query.Where(x => x.AcademicYear.StartsWith(queryDto.AcademicYear)); }
+
+            try
+            {
+                if (!string.IsNullOrEmpty(queryDto.SortBy))
+                {
+                    query = query.OrderBy(queryDto.SortBy + " " + (queryDto.SortDescending ? "descending" : "ascending"));
+                }
+            }
+            catch (Exception)
+            {
+                
+            }
+
+            var result = await query.ToListAsync();
+            var groupData = result
+                .GroupBy(x => new { x.Id, x.FirstName, x.LastName })
+                .Select(g => new TeacherDTO
+                {
+                    Id = g.Key.Id,
+                    FirstName = g.Key.FirstName,
+                    LastName = g.Key.LastName,
+                    ClassSubjects = g.Select(x => new ClassSubjectDTO
+                    {
+                        AcademicYear = x.AcademicYear,
+                        Room = x.Room,
+                        SubjectCode = x.SubjectCode,
+                        SubjectName = x.SubjectName
+                    }).ToList()
+                }).ToList();
+
+            return groupData;
         }
 
-        public async Task<Teachers> GetTeacherByEmail(string email)
+        public async Task<Teachers> GetTeacherByEmail(string email) //not needed
         {
             Teachers? teacher = await(from T in _context.Teachers
                                       join WU in _context.WebUsers
