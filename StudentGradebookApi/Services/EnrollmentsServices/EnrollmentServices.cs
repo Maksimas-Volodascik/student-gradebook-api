@@ -1,4 +1,5 @@
 ﻿using StudentGradebookApi.DTOs.Enrollments;
+using StudentGradebookApi.DTOs.SharedDto;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.ClassSubjectsRepository;
 using StudentGradebookApi.Repositories.EnrollmentsRepository;
@@ -39,9 +40,9 @@ namespace StudentGradebookApi.Services.EnrollmentsServices
             return Result.Success();
         }
 
-        public async Task<Result<IEnumerable<StudentEnrollments>>> GetStudentEnrollments(int studentId)
+        public async Task<Result<IEnumerable<StudentEnrollments>>> GetStudentEnrollments(int studentId, QueryDto queryDto)
         {
-            return Result<IEnumerable<StudentEnrollments>>.Success(await _enrollmentsRepository.GetStudentEnrollmentsAsync(studentId));
+            return Result<IEnumerable<StudentEnrollments>>.Success(await _enrollmentsRepository.GetStudentEnrollmentsAsync(studentId, queryDto));
         }
 
 
