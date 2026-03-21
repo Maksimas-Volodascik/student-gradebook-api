@@ -26,7 +26,7 @@ namespace StudentGradebookApi.Tests.Services.Class
         [Fact] 
         public async Task AddClassAsync_ValidData_ReturnsSuccess()
         {
-            var dto = new ClassesContentsDTO
+            var dto = new NewClassDto
             {
                 room = 101,
                 academicYear = "2025-2026"

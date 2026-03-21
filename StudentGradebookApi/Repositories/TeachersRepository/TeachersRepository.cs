@@ -19,6 +19,8 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
         public async Task<IEnumerable<TeacherDTO>> GetTeachersWithSubjectsAsync(TeachersQueryDto queryDto)
         {
             var teacherQuery = from teacher in _context.Teachers
+                               .Where(x => (queryDto.FirstName == null || x.FirstName.StartsWith(queryDto.FirstName)) && 
+                               (queryDto.LastName == null || x.LastName.StartsWith(queryDto.LastName)))
                                .Skip((queryDto.ValidPageNumber - 1) * queryDto.ValidPageSize)
                                .Take(queryDto.ValidPageSize)
                                select teacher;

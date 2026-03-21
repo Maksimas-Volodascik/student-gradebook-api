@@ -17,7 +17,7 @@ namespace StudentGradebookApi.Repositories.SubjectsRepository
         public async Task<IEnumerable<Subjects>> GetAllSubjects(QueryDto query)
         {
             var subjectsQuery = from subject in _context.Subjects
-                           .Skip((query.PageNumber - 1) * query.ValidPageSize)
+                           .Skip((query.ValidPageNumber - 1) * query.ValidPageSize)
                            .Take(query.ValidPageSize)
                                 select subject;
 

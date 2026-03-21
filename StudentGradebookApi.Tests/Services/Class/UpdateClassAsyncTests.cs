@@ -28,7 +28,7 @@ namespace StudentGradebookApi.Tests.Services.Class
         public async Task UpdateClassAsync_ValidData_ReturnsSuccess()
         {
             int classId = 1;
-            var dto = new ClassesContentsDTO
+            var dto = new NewClassDto
             {
                 room = 101,
                 academicYear = "2025-2026"
@@ -57,7 +57,7 @@ namespace StudentGradebookApi.Tests.Services.Class
         public async Task UpdateClassAsync_InvalidAcademicYear_ReturnsFailure()
         {
             int classId = 1;
-            var dto = new ClassesContentsDTO
+            var dto = new NewClassDto
             {
                 room = 101,
                 academicYear = "2025"
@@ -75,7 +75,7 @@ namespace StudentGradebookApi.Tests.Services.Class
         public async Task UpdateClassAsync_InvalidRoomNumber_ReturnsFailure()
         {
             int classId = 1;
-            var dto = new ClassesContentsDTO
+            var dto = new NewClassDto
             {
                 room = -101,
                 academicYear = "2025-2026"

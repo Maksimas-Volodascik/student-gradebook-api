@@ -25,12 +25,10 @@ namespace StudentGradebookApi.Repositories.ClassSubjectsRepository
                             on CS.SubjectId equals S.Id
                         select new ClassSubjectDTO
                         {
-                            Id = CS.Id,
                             AcademicYear = C.AcademicYear,
                             Room = C.Room,
                             SubjectName = S.SubjectName,
                             SubjectCode = S.SubjectCode,
-                            Description = S.Description
                         };
 
             return await query.ToListAsync();
