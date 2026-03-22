@@ -21,18 +21,17 @@ namespace StudentGradebookApi.Services.TeacherServices
             _userService = userService;
         }
 
-        public async Task<Result> AddTeacherAsync(TeacherRequestDTO teacherData)
+        public async Task<Result> AddTeacherAsync(TeacherRequestDto teacherData)
         {
             var validateTeacherData = ValidateTeacherData(teacherData);
             if (!validateTeacherData.IsSuccess) 
                 return Result<Teachers>.Failure(validateTeacherData.Error!);
 
-            NewUserDTO newUser = new NewUserDTO();
+            RegisterDto newUser = new RegisterDto();
             newUser.Email = teacherData.Email;
             newUser.Password = teacherData.Password;
-            newUser.Role = "teacher";
 
-            var registeredUser = await _userService.RegisterAsync(newUser);
+            var registeredUser = await _userService.RegisterAsync(newUser, "teacher");
             if (!registeredUser.IsSuccess) return Result<Teachers>.Failure(registeredUser.Error);
 
             Teachers newTeacher = new Teachers
@@ -48,7 +47,7 @@ namespace StudentGradebookApi.Services.TeacherServices
             return Result.Success();
         }
 
-        public async Task<Result> EditTeacherAsync(int teacherId, TeacherRequestDTO teacherData)
+        public async Task<Result> EditTeacherAsync(int teacherId, TeacherRequestDto teacherData)
         {
             var validation = ValidateTeacherData(teacherData);
             if (!validation.IsSuccess)
@@ -74,10 +73,10 @@ namespace StudentGradebookApi.Services.TeacherServices
             return Result<Teachers>.Success(response);
         }
 
-        public async Task<Result<IEnumerable<TeacherDTO>>> GetAllTeachersAsync(TeachersQueryDto queryDto)
+        public async Task<Result<IEnumerable<TeacherDto>>> GetAllTeachersAsync(TeachersQueryDto queryDto)
         {
             var response = await _teachersRepository.GetTeachersWithSubjectsAsync(queryDto);
-            return Result<IEnumerable<TeacherDTO>>.Success(response);
+            return Result<IEnumerable<TeacherDto>>.Success(response);
         }
 
         public async Task<Result> DeleteTeacherAsync(int id)
@@ -92,15 +91,15 @@ namespace StudentGradebookApi.Services.TeacherServices
             return Result.Success();
         }
 
-        public Result<TeacherRequestDTO> ValidateTeacherData(TeacherRequestDTO teacherData)
+        public Result<TeacherRequestDto> ValidateTeacherData(TeacherRequestDto teacherData)
         {
             if (string.IsNullOrWhiteSpace(teacherData.FirstName))
-                return Result<TeacherRequestDTO>.Failure(Errors.TeacherErrors.FirstNameMissing);
+                return Result<TeacherRequestDto>.Failure(Errors.TeacherErrors.FirstNameMissing);
 
             if (string.IsNullOrWhiteSpace(teacherData.LastName))
-                return Result<TeacherRequestDTO>.Failure(Errors.TeacherErrors.LastNameMissing);
+                return Result<TeacherRequestDto>.Failure(Errors.TeacherErrors.LastNameMissing);
 
-            return Result<TeacherRequestDTO>.Success(teacherData);
+            return Result<TeacherRequestDto>.Success(teacherData);
         }
     }
 }

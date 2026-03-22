@@ -15,7 +15,7 @@ namespace StudentGradebookApi.Services.GradesServices
             _gradesRepository = gradesRepository;
         }
 
-        public async Task<Result> EditGradeAsync(NewGradeDTO newGrade)
+        public async Task<Result> EditGradeAsync(NewGradeDto newGrade)
         {
             var valid = ValidateGradeData(newGrade);
             if (!valid.IsSuccess) return Result.Failure(valid.Error);
@@ -31,7 +31,7 @@ namespace StudentGradebookApi.Services.GradesServices
             return Result.Success();
         }
 
-        public async Task<Result> AddGradeAsync(NewGradeDTO newGrade)
+        public async Task<Result> AddGradeAsync(NewGradeDto newGrade)
         {
             var valid = ValidateGradeData(newGrade);
             if (!valid.IsSuccess) return Result.Failure(valid.Error!);
@@ -48,18 +48,18 @@ namespace StudentGradebookApi.Services.GradesServices
             return Result.Success();
         }
 
-        public async Task<Result<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGradesByStudentId(int year, int month)
+        public async Task<Result<IEnumerable<StudentGradesBySubjectDto>>> GetStudentGradesByStudentId(int year, int month)
         {
             //TODO: add call for student grades by ID
-            return Result<IEnumerable<StudentGradesBySubjectDTO>>.Failure(Errors.GradeErrors.GradeTypeInvalid);
+            return Result<IEnumerable<StudentGradesBySubjectDto>>.Failure(Errors.GradeErrors.GradeTypeInvalid);
         }
 
-        public async Task<Result<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGradesBySubjectId(GradesQueryDto queryDto)
+        public async Task<Result<IEnumerable<StudentGradesBySubjectDto>>> GetStudentGradesBySubjectId(GradesQueryDto queryDto)
         {
-            return Result<IEnumerable<StudentGradesBySubjectDTO>>.Success(await _gradesRepository.GetStudentGradesBySubjectId(queryDto));
+            return Result<IEnumerable<StudentGradesBySubjectDto>>.Success(await _gradesRepository.GetStudentGradesBySubjectId(queryDto));
         }
 
-        public Result ValidateGradeData(NewGradeDTO grade)
+        public Result ValidateGradeData(NewGradeDto grade)
         {
             if (grade.score > 10)
                 return Result.Failure(Errors.GradeErrors.ScoreOutOfRange);

@@ -6,9 +6,9 @@ namespace StudentGradebookApi.Services.GradesServices
 {
     public interface IGradesServices
     {
-        Task<Result<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGradesBySubjectId(GradesQueryDto queryDto);
-        Task<Result<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGradesByStudentId(int year, int month);
-        Task<Result> AddGradeAsync(NewGradeDTO newGrade);
-        Task<Result> EditGradeAsync(NewGradeDTO newGrade);
+        Task<Result<IEnumerable<StudentGradesBySubjectDto>>> GetStudentGradesBySubjectId(GradesQueryDto queryDto);
+        Task<Result<IEnumerable<StudentGradesBySubjectDto>>> GetStudentGradesByStudentId(int year, int month);
+        Task<Result> AddGradeAsync(NewGradeDto newGrade);
+        Task<Result> EditGradeAsync(NewGradeDto newGrade);
     }
 }

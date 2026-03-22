@@ -16,14 +16,14 @@ namespace StudentGradebookApi.Repositories.ClassSubjectsRepository
             _context = context;
         }
 
-        public async Task<IEnumerable<ClassSubjectDTO>> GetAllClassSubjectsAsync()
+        public async Task<IEnumerable<ClassSubjectDto>> GetAllClassSubjectsAsync()
         {
             var query = from CS in _context.ClassSubjects
                         join C in _context.Classes
                             on CS.ClassId equals C.Id
                         join S in _context.Subjects
                             on CS.SubjectId equals S.Id
-                        select new ClassSubjectDTO
+                        select new ClassSubjectDto
                         {
                             AcademicYear = C.AcademicYear,
                             Room = C.Room,

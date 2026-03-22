@@ -25,7 +25,7 @@ namespace StudentGradebookApi.Services.UserServices
             _userRepository = userRepository;
         }
         
-        public async Task<Result<WebUsers>> RegisterAsync(NewUserDTO newUser)
+        public async Task<Result<WebUsers>> RegisterAsync(RegisterDto newUser, string role)
         {
             if (string.IsNullOrWhiteSpace(newUser.Email))
                 return Result<WebUsers>.Failure(Errors.UserErrors.EmailRequired);
@@ -45,7 +45,7 @@ namespace StudentGradebookApi.Services.UserServices
             var hashedPassword = passwordHasher.HashPassword(user, newUser.Password);
             user.Email = newUser.Email;
             user.PasswordHash = hashedPassword;
-            user.Role = newUser.Role;
+            user.Role = role == null ? "demo" : role;
 
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
@@ -71,7 +71,7 @@ namespace StudentGradebookApi.Services.UserServices
             return Result.Success();
         }
 
-        public async Task<Result<TokenResponse>> LoginAsync(LoginDTO loginDto)
+        public async Task<Result<TokenResponse>> LoginAsync(LoginDto loginDto)
         {
             var user = await _userRepository.GetByEmailAsync(loginDto.Email);
             if (user is null || new PasswordHasher<WebUsers>().VerifyHashedPassword(user, user.PasswordHash, loginDto.Password) == PasswordVerificationResult.Failed)
@@ -146,12 +146,10 @@ namespace StudentGradebookApi.Services.UserServices
                 issuer: _configuration.GetValue<string>("AppSettings:Issuer"),
                 audience: _configuration.GetValue<string>("AppSettings:Audience"),
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(7),
+                expires: DateTime.UtcNow.AddHours(8),
                 signingCredentials: creds
                 );
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
-
-
     }
 }

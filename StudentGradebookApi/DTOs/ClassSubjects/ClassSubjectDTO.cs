@@ -1,6 +1,6 @@
 ﻿namespace StudentGradebookApi.DTOs.SubjectClass
 {
-    public class ClassSubjectDTO
+    public class ClassSubjectDto
     {
         public string AcademicYear { get; set; } = null!;
         public int Room { get; set; }
