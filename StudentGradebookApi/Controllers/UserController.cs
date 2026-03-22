@@ -15,40 +15,41 @@ using StudentGradebookApi.Services.UserServices;
 
 namespace StudentGradebookApi.Controllers
 {
-
     [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        //will need to add more services (teachers, classes etc).
 
         public UserController(IUserService userService)
         {
             _userService = userService;
-        }    
+        }
 
         //Register user
+        [Authorize(Roles = "Admin")]
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser (NewUserDTO newUser)
+        public async Task<IActionResult> RegisterUser (RegisterDto newUser)
         {
-            var result = await _userService.RegisterAsync(newUser);
+            var result = await _userService.RegisterAsync(newUser, "demo");
+
             if (result.IsSuccess)
             {
                 return Ok(result.Data);
             }
+
             return BadRequest(result.Error);
         }
         //Login user
         [HttpPost("login")]
-        public async Task<ActionResult<TokenResponse>> LoginUser (LoginDTO loginDto)
+        public async Task<ActionResult<TokenResponse>> LoginUser (LoginDto loginDto)
         {
             var response = await _userService.LoginAsync(loginDto);
             if (!response.IsSuccess)
                 return BadRequest(response.Error);
             return Ok(response.Data);
         }
-
+        [Authorize]
         [HttpPost("refresh-token")]
         public async Task<ActionResult<TokenResponse>> RefreshToken(RefreshTokenRequest request)
         {
@@ -63,6 +64,7 @@ namespace StudentGradebookApi.Controllers
           {
               return Ok("You are admin!");
           }*/
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser (int id)
         {

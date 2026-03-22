@@ -23,7 +23,7 @@ namespace StudentGradebookApi.Controllers
             _enrollmentServices = enrollmentServices;
             _gradesServices = gradesServices;
         }
-
+        [Authorize(Roles = "Student,Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StudentEnrollments>>> GetStudentEnrollments([FromQuery] QueryDto queryDto)
         {
@@ -33,6 +33,7 @@ namespace StudentGradebookApi.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Student,Admin")]
         [HttpPost("{classSubjectId}")]
         public async Task<ActionResult<Enrollments>> EnrollStudent(int classSubjectId)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.SharedDto;
 using StudentGradebookApi.DTOs.Subjects;
 using StudentGradebookApi.Models;
@@ -6,6 +7,7 @@ using StudentGradebookApi.Services.SubjectsService;
 
 namespace StudentGradebookApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SubjectsController : ControllerBase
@@ -31,6 +33,7 @@ namespace StudentGradebookApi.Controllers
             return Ok(subjects);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPatch("{id}")]
         public async Task<ActionResult<Subjects>> UpdateSubjectAsync(int id, SubjectContentsDTO sujectContentsDTO)
         {
@@ -38,6 +41,7 @@ namespace StudentGradebookApi.Controllers
             return Ok(subjects);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPost]
         public async Task<ActionResult<Subjects>> AddSubjectAsync(SubjectContentsDTO sujectContentsDTO)
         {
@@ -45,6 +49,7 @@ namespace StudentGradebookApi.Controllers
             return Ok(subjects);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Subjects>> DeleteSubjectAsync(int id)
         {

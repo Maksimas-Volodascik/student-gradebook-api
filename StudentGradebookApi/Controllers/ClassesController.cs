@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.Classes;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Services.ClassesServices;
@@ -7,6 +8,7 @@ using StudentGradebookApi.Services.ClassesServices;
 
 namespace StudentGradebookApi.Controllers
 {
+    [Authorize]
     [Route("api/classes")]
     [ApiController]
     public class ClassesController : ControllerBase
@@ -30,6 +32,7 @@ namespace StudentGradebookApi.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPost]
         public async Task<ActionResult<NewClassDto>> AddClassAsync(NewClassDto classesContentsDTO)
         {
@@ -37,6 +40,7 @@ namespace StudentGradebookApi.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPatch("{id}")]
         public async Task<ActionResult<NewClassDto>> UpdateClassAsync(int id, NewClassDto classesContentsDTO)
         {
