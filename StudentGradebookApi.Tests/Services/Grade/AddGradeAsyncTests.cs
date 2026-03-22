@@ -26,7 +26,7 @@ namespace StudentGradebookApi.Tests.Services.Grade
         [Fact]
         public async Task AddGradeAsync_ValidData_AddsGradeAndReturnsSuccess()
         {
-            var dto = new NewGradeDTO
+            var dto = new NewGradeDto
             {
                 gradingDate = DateTime.UtcNow,
                 gradeType = "Exam",
@@ -50,7 +50,7 @@ namespace StudentGradebookApi.Tests.Services.Grade
         [Fact]
         public async Task AddGradeAsync_InvalidScore_ReturnsFailure()
         {
-            var dto = new NewGradeDTO
+            var dto = new NewGradeDto
             {
                 gradingDate = DateTime.UtcNow,
                 gradeType = "Exam",
@@ -69,7 +69,7 @@ namespace StudentGradebookApi.Tests.Services.Grade
         [Fact]
         public async Task AddGradeAsync_InvalidEnrollmentId_ReturnsFailure()
         {
-            var dto = new NewGradeDTO
+            var dto = new NewGradeDto
             {
                 gradingDate = DateTime.UtcNow,
                 gradeType = "Exam",
@@ -88,7 +88,7 @@ namespace StudentGradebookApi.Tests.Services.Grade
         [Fact]
         public async Task AddGradeAsync_EmptyGradeType_ReturnsFailure()
         {
-            var dto = new NewGradeDTO
+            var dto = new NewGradeDto
             {
                 gradingDate = DateTime.UtcNow,
                 gradeType = "",
@@ -107,7 +107,7 @@ namespace StudentGradebookApi.Tests.Services.Grade
         [Fact]
         public async Task AddGradeAsync_DefaultGradingDate_ReturnsFailure()
         {
-            var dto = new NewGradeDTO
+            var dto = new NewGradeDto
             {
                 gradingDate = default(DateTime),
                 gradeType = "Exam",

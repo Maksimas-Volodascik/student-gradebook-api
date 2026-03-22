@@ -38,9 +38,9 @@ namespace StudentGradebookApi.Tests.Services.User
 
         public static class UserBuilder
         {
-            public static LoginDTO Build()
+            public static LoginDto Build()
             {
-                return new LoginDTO
+                return new LoginDto
                 { 
                     Email = "email@email.com",
                     Password = "password123",

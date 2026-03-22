@@ -31,9 +31,9 @@ namespace StudentGradebookApi.Tests.Services.Teacher
 
         public static class TeacherDTOBuilder
         {
-            public static TeacherRequestDTO Build()
+            public static TeacherRequestDto Build()
             {
-                return new TeacherRequestDTO
+                return new TeacherRequestDto
                 {
                     Email = "email@email.com",
                     Password = "password123",
@@ -55,7 +55,7 @@ namespace StudentGradebookApi.Tests.Services.Teacher
                 Email = teacherDTO.Email
             };
 
-            _userServiceMock.Setup(u => u.RegisterAsync(It.IsAny<NewUserDTO>()))
+            _userServiceMock.Setup(u => u.RegisterAsync(It.IsAny<NewUserDto>()))
                 .ReturnsAsync(Result<WebUsers>.Success(webUser));
 
             _teacherRepMock.Setup(t => t.AddAsync(It.IsAny<Teachers>()))
@@ -67,7 +67,7 @@ namespace StudentGradebookApi.Tests.Services.Teacher
             var result = await _teacherService.AddTeacherAsync(teacherDTO);
 
             Assert.True(result.IsSuccess);
-            _userServiceMock.Verify(u => u.RegisterAsync(It.IsAny<NewUserDTO>()), Times.Once);
+            _userServiceMock.Verify(u => u.RegisterAsync(It.IsAny<NewUserDto>()), Times.Once);
             _teacherRepMock.Verify(t => t.AddAsync(It.IsAny<Teachers>()), Times.Once);
             _teacherRepMock.Verify(t => t.SaveChangesAsync(), Times.Once);
         }
@@ -86,7 +86,7 @@ namespace StudentGradebookApi.Tests.Services.Teacher
             Assert.False(result.IsSuccess);
             Assert.Equal(result.Error, Errors.TeacherErrors.FirstNameMissing);
 
-            _userServiceMock.Verify(u => u.RegisterAsync(It.IsAny<NewUserDTO>()), Times.Never);
+            _userServiceMock.Verify(u => u.RegisterAsync(It.IsAny<NewUserDto>()), Times.Never);
             _teacherRepMock.Verify(t => t.AddAsync(It.IsAny<Teachers>()), Times.Never);
         }
 
@@ -104,7 +104,7 @@ namespace StudentGradebookApi.Tests.Services.Teacher
             Assert.False(result.IsSuccess);
             Assert.Equal(result.Error, Errors.TeacherErrors.LastNameMissing);
 
-            _userServiceMock.Verify(u => u.RegisterAsync(It.IsAny<NewUserDTO>()), Times.Never);
+            _userServiceMock.Verify(u => u.RegisterAsync(It.IsAny<NewUserDto>()), Times.Never);
             _teacherRepMock.Verify(t => t.AddAsync(It.IsAny<Teachers>()), Times.Never);
         }
     }

@@ -56,7 +56,7 @@ namespace StudentGradebookApi.Tests.Services.Student
                 Email = studentData.Email
             };
 
-            _mockUserService.Setup(u => u.RegisterAsync(It.IsAny<NewUserDTO>()))
+            _mockUserService.Setup(u => u.RegisterAsync(It.IsAny<NewUserDto>()))
                 .ReturnsAsync(Result<WebUsers>.Success(webUser));
 
             _mockStudRepository.Setup(s => s.AddAsync(It.IsAny<Students>()))
@@ -69,7 +69,7 @@ namespace StudentGradebookApi.Tests.Services.Student
 
             Assert.True(result.IsSuccess);
             Assert.Equal(studentData.Email, webUser.Email);
-            _mockUserService.Verify(u => u.RegisterAsync(It.IsAny<NewUserDTO>()), Times.Once);
+            _mockUserService.Verify(u => u.RegisterAsync(It.IsAny<NewUserDto>()), Times.Once);
             _mockStudRepository.Verify(r => r.AddAsync(It.IsAny<Students>()), Times.Once);
             _mockStudRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
@@ -81,7 +81,7 @@ namespace StudentGradebookApi.Tests.Services.Student
 
             Assert.False(result.IsSuccess);
             Assert.Equal(Errors.StudentErrors.StudentDataNull, result.Error);
-            _mockUserService.Verify(x => x.RegisterAsync(It.IsAny<NewUserDTO>()), Times.Never);
+            _mockUserService.Verify(x => x.RegisterAsync(It.IsAny<NewUserDto>()), Times.Never);
             _mockStudRepository.Verify(x => x.AddAsync(It.IsAny<Students>()), Times.Never);
             _mockStudRepository.Verify(x => x.SaveChangesAsync(), Times.Never);
         }
@@ -93,7 +93,7 @@ namespace StudentGradebookApi.Tests.Services.Student
 
             var expectedError = Errors.UserErrors.EmailExists;
 
-            _mockUserService.Setup(x => x.RegisterAsync(It.IsAny<NewUserDTO>()))
+            _mockUserService.Setup(x => x.RegisterAsync(It.IsAny<NewUserDto>()))
                 .ReturnsAsync(Result<WebUsers>.Failure(expectedError));
 
             var result = await _studentService.AddStudentAsync(studentData);
