@@ -16,7 +16,7 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
             _context = context;
         }
 
-        public async Task<IEnumerable<TeacherDTO>> GetTeachersWithSubjectsAsync(TeachersQueryDto queryDto)
+        public async Task<IEnumerable<TeacherDto>> GetTeachersWithSubjectsAsync(TeachersQueryDto queryDto)
         {
             var teacherQuery = from teacher in _context.Teachers
                                .Where(x => (queryDto.FirstName == null || x.FirstName.StartsWith(queryDto.FirstName)) && 
@@ -73,12 +73,12 @@ namespace StudentGradebookApi.Repositories.TeachersRepository
             var result = await query.ToListAsync();
             var groupData = result
                 .GroupBy(x => new { x.Id, x.FirstName, x.LastName })
-                .Select(g => new TeacherDTO
+                .Select(g => new TeacherDto
                 {
                     Id = g.Key.Id,
                     FirstName = g.Key.FirstName,
                     LastName = g.Key.LastName,
-                    ClassSubjects = g.Select(x => new ClassSubjectDTO
+                    ClassSubjects = g.Select(x => new ClassSubjectDto
                     {
                         AcademicYear = x.AcademicYear,
                         Room = x.Room,

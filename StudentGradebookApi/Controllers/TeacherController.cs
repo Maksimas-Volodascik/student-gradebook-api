@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.Teachers;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Services.TeacherServices;
 
 namespace StudentGradebookApi.Controllers
 {
+    [Authorize]
     [Route("api/teacher")]
     [ApiController]
     public class TeacherController : ControllerBase
@@ -17,26 +19,29 @@ namespace StudentGradebookApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<TeacherDTO>>> GetTeachers([FromQuery] TeachersQueryDto queryDto)
+        public async Task<ActionResult<List<TeacherDto>>> GetTeachers([FromQuery] TeachersQueryDto queryDto)
         {
             var response = await _teacherService.GetAllTeachersAsync(queryDto);
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult> AddNewTeacher(TeacherRequestDTO newTeacher)
+        public async Task<ActionResult> AddNewTeacher(TeacherRequestDto newTeacher)
         {
             await _teacherService.AddTeacherAsync(newTeacher);
             return Ok();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}")]
-        public async Task<ActionResult> EditTeacher(int id, TeacherRequestDTO teacher)
+        public async Task<ActionResult> EditTeacher(int id, TeacherRequestDto teacher)
         {
             await _teacherService.EditTeacherAsync(id, teacher);
             return Ok();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteTeacher(int id)
         {

@@ -31,7 +31,7 @@ namespace StudentGradebookApi.Services.SubjectClassServices
             _classesServices = classesServices;
         }
 
-        public async Task<Result> AssignSubjectToClassAsync(CombineClassSubjectDTO combineClassSubjectDTO)
+        public async Task<Result> AssignSubjectToClassAsync(CombineClassSubjectDto combineClassSubjectDTO)
         {
             var subject = await _subjectsService.GetSubjectByIdAsync(combineClassSubjectDTO.SubjectId);
             var classes = await _classesServices.GetClassByIdAsync(combineClassSubjectDTO.ClassId);
@@ -76,9 +76,9 @@ namespace StudentGradebookApi.Services.SubjectClassServices
             return Result<ClassSubjects>.Success(classSubject);
         }
 
-        public async Task<Result<IEnumerable<ClassSubjectDTO>>> GetAllClassSubjectsAsync()
+        public async Task<Result<IEnumerable<ClassSubjectDto>>> GetAllClassSubjectsAsync()
         {
-            return Result<IEnumerable<ClassSubjectDTO>>.Success(await _classSubjectsRepository.GetAllClassSubjectsAsync());
+            return Result<IEnumerable<ClassSubjectDto>>.Success(await _classSubjectsRepository.GetAllClassSubjectsAsync());
         }
 
         public async Task<Result> RemoveSubjectClassAsync(int classSubjectsId)

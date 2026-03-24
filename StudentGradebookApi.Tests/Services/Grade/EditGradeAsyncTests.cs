@@ -25,7 +25,7 @@ namespace StudentGradebookApi.Tests.Services.Grade
         [Fact]
         public async Task EditGradeAsync_ValidData_UpdatesGradeAndReturnsSuccess()
         {
-            var dto = new NewGradeDTO
+            var dto = new NewGradeDto
             {
                 gradingDate = DateTime.UtcNow.Date,
                 gradeType = "exam",
@@ -59,7 +59,7 @@ namespace StudentGradebookApi.Tests.Services.Grade
         [Fact]
         public async Task EditGradeAsync_InvalidData_ReturnsFailure_AndDoesNotCallRepository()
         {
-            var dto = new NewGradeDTO
+            var dto = new NewGradeDto
             {
                 gradingDate = default,
                 gradeType = "exam",

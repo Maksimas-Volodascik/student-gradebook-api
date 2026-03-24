@@ -1,6 +1,6 @@
 ﻿namespace StudentGradebookApi.DTOs.Grades
 {
-    public class NewGradeDTO
+    public class NewGradeDto
     {
         public byte score {  get; set; }
         public string gradeType { get; set; }

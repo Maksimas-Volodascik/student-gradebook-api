@@ -38,7 +38,7 @@ namespace StudentGradebookApi.Tests.Services.ClassSubject
         {
             var subject = new Subjects{ Id = 1 };
             var classes = new Classes{ Id = 1 };
-            var dto = new CombineClassSubjectDTO
+            var dto = new CombineClassSubjectDto
             {
                 SubjectId = subject.Id,
                 ClassId = classes.Id
@@ -61,7 +61,7 @@ namespace StudentGradebookApi.Tests.Services.ClassSubject
         [Fact]
         public async Task AssignSubjectToClassAsync_SubjectNotFound_ReturnsFailure()
         {
-            var dto = new CombineClassSubjectDTO
+            var dto = new CombineClassSubjectDto
             {
                 SubjectId = 1,
                 ClassId = 1
@@ -83,7 +83,7 @@ namespace StudentGradebookApi.Tests.Services.ClassSubject
         [Fact]
         public async Task AssignSubjectToClassAsync_ClassNotFound_ReturnsFailure()
         {
-            var dto = new CombineClassSubjectDTO
+            var dto = new CombineClassSubjectDto
             {
                 SubjectId = 1,
                 ClassId = 1

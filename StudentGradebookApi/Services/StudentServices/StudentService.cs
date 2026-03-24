@@ -22,12 +22,11 @@ namespace StudentGradebookApi.Services.StudentServices
         {
             if (studentData == null) return Result.Failure(Errors.StudentErrors.StudentDataNull);
 
-            NewUserDTO newUser = new NewUserDTO();
+            RegisterDto newUser = new RegisterDto();
             newUser.Email = studentData.Email;
             newUser.Password = studentData.Password;
-            newUser.Role = "student";
 
-            var registeredUser = await _userService.RegisterAsync(newUser);
+            var registeredUser = await _userService.RegisterAsync(newUser, "student");
             if (!registeredUser.IsSuccess) return Result.Failure(registeredUser.Error!);
 
             Students student = new Students();

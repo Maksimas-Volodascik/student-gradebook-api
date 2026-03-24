@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.Students;
 using StudentGradebookApi.Models;
@@ -6,6 +7,7 @@ using StudentGradebookApi.Services.StudentServices;
 
 namespace StudentGradebookApi.Controllers
 {
+    [Authorize]
     [Route("api/student")]
     [ApiController]
     public class StudentController : ControllerBase
@@ -17,7 +19,8 @@ namespace StudentGradebookApi.Controllers
             _studentService = studentService;
             _mapper = mapper;
         }
-        
+
+        [Authorize(Roles = "Student,Teacher,Admin")]
         [HttpGet()]
         public async Task<ActionResult<IEnumerable<StudentList>>> GetStudents([FromQuery] StudentsQueryDto queryDto)
         {
@@ -25,6 +28,7 @@ namespace StudentGradebookApi.Controllers
             return Ok(students);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<StudentList>> GetStudent(int id)
         {
@@ -37,6 +41,7 @@ namespace StudentGradebookApi.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost()]
         public async Task<ActionResult> AddStudent(NewStudent studentData)
         {
@@ -47,6 +52,7 @@ namespace StudentGradebookApi.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}")]
         public async Task<ActionResult> EditStudent(EditStudent studentData, int id)
         {
@@ -57,6 +63,7 @@ namespace StudentGradebookApi.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteStudent(int id)
         {

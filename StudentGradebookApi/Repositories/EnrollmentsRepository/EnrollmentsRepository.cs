@@ -33,7 +33,6 @@ namespace StudentGradebookApi.Repositories.EnrollmentsRepository
                             Status = E.Status,
                         };
 
-
             return await query.ToListAsync();
         }
     }

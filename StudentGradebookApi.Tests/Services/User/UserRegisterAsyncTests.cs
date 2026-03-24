@@ -28,7 +28,7 @@ namespace StudentGradebookApi.Tests.Services.User
         [Fact]
         public async Task RegisterAsync_InvalidEmail_ReturnsEmailInvalid()
         {
-            var newUser = new NewUserDTO
+            var newUser = new NewUserDto
             {
                 Email = "not-an-email",
                 Password = "Password123!",
@@ -44,7 +44,7 @@ namespace StudentGradebookApi.Tests.Services.User
         [Fact]
         public async Task RegisterAsync_EmptyEmail_ReturnsEmailRequired()
         {
-            var newUser = new NewUserDTO
+            var newUser = new NewUserDto
             {
                 Email = "   ",
                 Password = "Password123!",
@@ -60,7 +60,7 @@ namespace StudentGradebookApi.Tests.Services.User
         [Fact]
         public async Task RegisterAsync_EmailAlreadyExists_ReturnsEmailExists()
         {
-            var newUser = new NewUserDTO
+            var newUser = new NewUserDto
             {
                 Email = "test@example.com",
                 Password = "Password123!",
@@ -80,7 +80,7 @@ namespace StudentGradebookApi.Tests.Services.User
         [Fact]
         public async Task RegisterAsync_ValidNewUser_ReturnsSuccess()
         {
-            var newUser = new NewUserDTO
+            var newUser = new NewUserDto
             {
                 Email = "test@example.com",
                 Password = "Password123!",

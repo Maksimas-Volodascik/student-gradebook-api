@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.Grades;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.GradesRepository;
@@ -8,6 +9,7 @@ using StudentGradebookApi.Services.GradesServices;
 
 namespace StudentGradebookApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GradesController : ControllerBase
@@ -17,22 +19,25 @@ namespace StudentGradebookApi.Controllers
             _gradesService = gradesServices;
         }
 
+        [Authorize(Roles = "Student,Teacher,Admin")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StudentGradesBySubjectDTO>>> GetStudentGrades([FromQuery] GradesQueryDto queryDto)
+        public async Task<ActionResult<IEnumerable<StudentGradesBySubjectDto>>> GetStudentGrades([FromQuery] GradesQueryDto queryDto)
         {
             var studentGrades = await _gradesService.GetStudentGradesBySubjectId(queryDto);
             return Ok(studentGrades);
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPost]
-        public async Task<ActionResult<NewGradeDTO>> NewGrade(NewGradeDTO newGrade)
+        public async Task<ActionResult<NewGradeDto>> NewGrade(NewGradeDto newGrade)
         {
             await _gradesService.AddGradeAsync(newGrade);
             return Ok();
         }
 
+        [Authorize(Roles = "Teacher,Admin")]
         [HttpPatch]
-        public async Task<ActionResult<Grades>> EditGrade(NewGradeDTO newGrade)
+        public async Task<ActionResult<Grades>> EditGrade(NewGradeDto newGrade)
         {
             var response = await _gradesService.EditGradeAsync(newGrade);
             return Ok(response);

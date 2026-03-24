@@ -25,12 +25,12 @@ namespace StudentGradebookApi.Repositories.GradesRepository
             return query;
         }
 
-        public async Task<IEnumerable<StudentGradesBySubjectDTO>> GetStudentGradesByStudentId()
+        public async Task<IEnumerable<StudentGradesBySubjectDto>> GetStudentGradesByStudentId()
         {
             return null;
         }
 
-        public async Task<IEnumerable<StudentGradesBySubjectDTO>> GetStudentGradesBySubjectId(GradesQueryDto queryDto)
+        public async Task<IEnumerable<StudentGradesBySubjectDto>> GetStudentGradesBySubjectId(GradesQueryDto queryDto)
         {
             var studentQuery = from student in _context.Students
                                .Skip((queryDto.ValidPageNumber - 1) * queryDto.ValidPageSize)
@@ -66,13 +66,13 @@ namespace StudentGradebookApi.Repositories.GradesRepository
 
             var groupData = result
                             .GroupBy(x => new {x.FirstName, x.LastName, x.ClassSubjectId, x.EnrollmentId})
-                            .Select(g => new StudentGradesBySubjectDTO
+                            .Select(g => new StudentGradesBySubjectDto
                             {
                                 FirstName = g.Key.FirstName,
                                 LastName = g.Key.LastName,
                                 ClassSubjectId = g.Key.ClassSubjectId,
                                 EnrollmentId = g.Key.EnrollmentId,
-                                Grades = g.Select(x => new GradesListDTO
+                                Grades = g.Select(x => new GradesListDto
                                 {
                                     Score = x.Score,
                                     Grade_Type = x.Grade_Type,

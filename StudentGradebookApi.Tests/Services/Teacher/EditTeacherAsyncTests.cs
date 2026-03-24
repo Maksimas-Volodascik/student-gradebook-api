@@ -29,9 +29,9 @@ namespace StudentGradebookApi.Tests.Services.Teacher
         }
         public static class TeacherDTOBuilder
         {
-            public static TeacherRequestDTO Build()
+            public static TeacherRequestDto Build()
             {
-                return new TeacherRequestDTO
+                return new TeacherRequestDto
                 {
                     Email = "email@email.com",
                     Password = "password123",
@@ -78,7 +78,7 @@ namespace StudentGradebookApi.Tests.Services.Teacher
         [Fact]
         public async Task EditTeacherAsync_InvalidTeacherData_ReturnsFailureResult()
         {
-            var invalidTeacherDTO = new TeacherRequestDTO
+            var invalidTeacherDTO = new TeacherRequestDto
             {
                 Email = "",
                 Password = "pwd",

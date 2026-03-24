@@ -2,7 +2,7 @@
 
 namespace StudentGradebookApi.DTOs.Users
 {
-    public class NewUserDTO
+    public class NewUserDto
     {
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
