@@ -31,7 +31,7 @@ namespace StudentGradebookApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser (RegisterDto newUser)
         {
-            var result = await _userService.RegisterAsync(newUser, "demo");
+            var result = await _userService.RegisterAsync(newUser, "Demo");
 
             if (result.IsSuccess)
             {

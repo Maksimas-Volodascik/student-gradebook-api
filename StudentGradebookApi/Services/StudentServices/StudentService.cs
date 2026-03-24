@@ -26,7 +26,7 @@ namespace StudentGradebookApi.Services.StudentServices
             newUser.Email = studentData.Email;
             newUser.Password = studentData.Password;
 
-            var registeredUser = await _userService.RegisterAsync(newUser, "student");
+            var registeredUser = await _userService.RegisterAsync(newUser, "Student");
             if (!registeredUser.IsSuccess) return Result.Failure(registeredUser.Error!);
 
             Students student = new Students();

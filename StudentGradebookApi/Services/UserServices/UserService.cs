@@ -45,7 +45,7 @@ namespace StudentGradebookApi.Services.UserServices
             var hashedPassword = passwordHasher.HashPassword(user, newUser.Password);
             user.Email = newUser.Email;
             user.PasswordHash = hashedPassword;
-            user.Role = role == null ? "demo" : role;
+            user.Role = role == null ? "Demo" : role;
 
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
