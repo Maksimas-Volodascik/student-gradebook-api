@@ -23,7 +23,10 @@ namespace StudentGradebookApi.Controllers
         public async Task<ActionResult<CombineClassSubjectDto>> EditClassSubjectTeacher(CombineClassSubjectDto combineClassSubjectDTO)
         {
             var response = await _classSubjectsService.AssignSubjectToClassAsync(combineClassSubjectDTO);
-            return Ok(response);
+
+            if (!response.IsSuccess) return NotFound(response.Error.Message);
+
+            return Ok();
         }
 
         [Authorize(Roles = "Teacher,Admin")]
@@ -31,6 +34,9 @@ namespace StudentGradebookApi.Controllers
         public async Task<ActionResult> DeleteClassSubject(int id)
         {
             var response = await _classSubjectsService.RemoveSubjectClassAsync(id);
+
+            if (!response.IsSuccess) return NotFound(response.Error.Message);
+
             return Ok();
         }
     }

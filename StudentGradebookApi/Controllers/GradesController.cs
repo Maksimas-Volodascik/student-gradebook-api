@@ -4,6 +4,7 @@ using StudentGradebookApi.DTOs.Grades;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.GradesRepository;
 using StudentGradebookApi.Services.GradesServices;
+using StudentGradebookApi.Shared;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,14 +25,18 @@ namespace StudentGradebookApi.Controllers
         public async Task<ActionResult<IEnumerable<StudentGradesBySubjectDto>>> GetStudentGrades([FromQuery] GradesQueryDto queryDto)
         {
             var studentGrades = await _gradesService.GetStudentGradesBySubjectId(queryDto);
-            return Ok(studentGrades);
+
+            return Ok(studentGrades.Data);
         }
 
         [Authorize(Roles = "Teacher,Admin")]
         [HttpPost]
         public async Task<ActionResult<NewGradeDto>> NewGrade(NewGradeDto newGrade)
         {
-            await _gradesService.AddGradeAsync(newGrade);
+            var response = await _gradesService.AddGradeAsync(newGrade);
+
+            if (!response.IsSuccess) return BadRequest(response.Error.Message);
+
             return Ok();
         }
 
@@ -40,7 +45,15 @@ namespace StudentGradebookApi.Controllers
         public async Task<ActionResult<Grades>> EditGrade(NewGradeDto newGrade)
         {
             var response = await _gradesService.EditGradeAsync(newGrade);
-            return Ok(response);
+
+            if (response.IsSuccess) return Ok();
+
+            return response.Error.Code switch
+            {
+                "grade.not.found" => NotFound(response.Error.Message),
+
+                _ => BadRequest(response.Error.Message)
+            };
         }
     }
 }

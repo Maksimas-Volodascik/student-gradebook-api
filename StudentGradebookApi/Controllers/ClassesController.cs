@@ -22,14 +22,16 @@ namespace StudentGradebookApi.Controllers
         public async Task<ActionResult<IEnumerable<ClassSubjectsDto>>> GetAllClassesAsync([FromQuery] ClassesQueryDto classesQuery)
         {
             var response = await _classesServices.GetAllClassesAsync(classesQuery);
-            return Ok(response);
+            return Ok(response.Data);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Classes>> GetClassByIdAsync(int id)
         {
             var response = await _classesServices.GetClassByIdAsync(id);
-            return Ok(response);
+            if (!response.IsSuccess) return NotFound(response.Error);
+            
+            return Ok(response.Data);
         }
 
         [Authorize(Roles = "Teacher,Admin")]
@@ -37,7 +39,8 @@ namespace StudentGradebookApi.Controllers
         public async Task<ActionResult<NewClassDto>> AddClassAsync(NewClassDto classesContentsDTO)
         {
             var response = await _classesServices.AddClassAsync(classesContentsDTO);
-            return Ok(response);
+
+            return Ok();
         }
 
         [Authorize(Roles = "Teacher,Admin")]
@@ -45,7 +48,15 @@ namespace StudentGradebookApi.Controllers
         public async Task<ActionResult<NewClassDto>> UpdateClassAsync(int id, NewClassDto classesContentsDTO)
         {
             var response = await _classesServices.UpdateClassAsync(id, classesContentsDTO);
-            return Ok(response);
+
+            if (response.IsSuccess) return Ok();
+
+            return response.Error.Code switch
+            {
+                "class.not.found" => NotFound(response.Error.Message),
+
+                _ => BadRequest(response.Error.Message)
+            };
         }
     }
 }

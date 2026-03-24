@@ -38,7 +38,7 @@ namespace StudentGradebookApi.Controllers
                 return Ok(result.Data);
             }
 
-            return BadRequest(result.Error);
+            return BadRequest(result.Error.Message);
         }
         //Login user
         [HttpPost("login")]
@@ -46,7 +46,7 @@ namespace StudentGradebookApi.Controllers
         {
             var response = await _userService.LoginAsync(loginDto);
             if (!response.IsSuccess)
-                return BadRequest(response.Error);
+                return BadRequest(response.Error.Message);
             return Ok(response.Data);
         }
         [Authorize]

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.Enrollments;
 using StudentGradebookApi.DTOs.Grades;
@@ -30,7 +31,7 @@ namespace StudentGradebookApi.Controllers
             int userId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var response = await _enrollmentServices.GetStudentEnrollments(userId, queryDto);
 
-            return Ok(response);
+            return Ok(response.Data);
         }
 
         [Authorize(Roles = "Student,Admin")]
@@ -38,7 +39,10 @@ namespace StudentGradebookApi.Controllers
         public async Task<ActionResult<Enrollments>> EnrollStudent(int classSubjectId)
         {
             var userEmail = User.FindFirst(ClaimTypes.Email)!.Value;
-            await _enrollmentServices.EnrollStudent(classSubjectId, userEmail);
+            var response = await _enrollmentServices.EnrollStudent(classSubjectId, userEmail);
+
+            if (!response.IsSuccess) return NotFound(response.Error.Message);
+
             return Ok();
         }
 
