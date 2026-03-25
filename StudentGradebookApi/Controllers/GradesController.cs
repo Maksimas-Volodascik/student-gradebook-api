@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.Grades;
 using StudentGradebookApi.Models;
@@ -11,8 +12,9 @@ using StudentGradebookApi.Shared;
 namespace StudentGradebookApi.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class GradesController : ControllerBase
     {
         private readonly IGradesServices _gradesService;

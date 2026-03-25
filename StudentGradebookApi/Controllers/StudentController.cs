@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.Students;
@@ -8,8 +9,9 @@ using StudentGradebookApi.Services.StudentServices;
 namespace StudentGradebookApi.Controllers
 {
     [Authorize]
-    [Route("api/student")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class StudentController : ControllerBase
     {
         private readonly IStudentService _studentService;

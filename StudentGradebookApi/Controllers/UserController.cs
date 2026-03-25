@@ -1,22 +1,24 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using StudentGradebookApi.DTOs.Students;
 using StudentGradebookApi.DTOs.SubjectClass;
 using StudentGradebookApi.DTOs.Users;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Services.SubjectClassServices;
 using StudentGradebookApi.Services.UserServices;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace StudentGradebookApi.Controllers
 {
-    [Route("api/user")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;

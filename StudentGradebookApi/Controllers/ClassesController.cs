@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.Classes;
 using StudentGradebookApi.Models;
@@ -9,8 +10,9 @@ using StudentGradebookApi.Services.ClassesServices;
 namespace StudentGradebookApi.Controllers
 {
     [Authorize]
-    [Route("api/classes")]
+    [Route("api/v{version:apiVersion}/classes")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class ClassesController : ControllerBase
     {
         private readonly IClassesServices _classesServices;

@@ -1,4 +1,5 @@
-﻿using Azure;
+﻿using Asp.Versioning;
+using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.Enrollments;
@@ -14,8 +15,9 @@ using System.Security.Claims;
 namespace StudentGradebookApi.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class EnrollmentsController : ControllerBase
     {
         private readonly IEnrollmentServices _enrollmentServices;

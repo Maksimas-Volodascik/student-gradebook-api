@@ -1,4 +1,5 @@
 
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +42,26 @@ namespace StudentGradebookApi
 
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
+
+            //API Versioning
+            builder.Services.AddApiVersioning(opt =>
+            {
+                opt.DefaultApiVersion = new ApiVersion(1, 0);
+                opt.AssumeDefaultVersionWhenUnspecified = true;
+                opt.ReportApiVersions = true;
+                opt.ApiVersionReader = new UrlSegmentApiVersionReader();
+            }).AddMvc()
+            .AddApiExplorer(opt =>
+            {
+                opt.GroupNameFormat = "'v'VVV";
+                opt.SubstituteApiVersionInUrl = true;
+            });
+
+            //Lowercase API calls
+            builder.Services.AddRouting(opt =>
+            {
+                opt.LowercaseUrls = true;
+            });
 
             // Database
             builder.Services.AddDbContext<SchoolDbContext>(options =>

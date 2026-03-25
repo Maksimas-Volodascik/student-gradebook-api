@@ -1,4 +1,5 @@
-﻿using Azure;
+﻿using Asp.Versioning;
+using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentGradebookApi.DTOs.SharedDto;
@@ -9,8 +10,9 @@ using StudentGradebookApi.Services.SubjectsService;
 namespace StudentGradebookApi.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class SubjectsController : ControllerBase
     {
         private readonly ISubjectsService _subjectsService;
