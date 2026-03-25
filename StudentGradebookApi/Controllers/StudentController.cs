@@ -24,21 +24,22 @@ namespace StudentGradebookApi.Controllers
         [HttpGet()]
         public async Task<ActionResult<IEnumerable<StudentList>>> GetStudents([FromQuery] StudentsQueryDto queryDto)
         {
-            var students = await _studentService.GetAllStudentsAsync(queryDto);
-            return Ok(students);
+            var response = await _studentService.GetAllStudentsAsync(queryDto);
+
+            return Ok(response.Data);
         }
 
         [Authorize(Roles = "Teacher,Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<StudentList>> GetStudent(int id)
         {
-            var student = await _studentService.GetStudentByIdAsync(id);
+            var response = await _studentService.GetStudentByIdAsync(id);
 
-            if (!student.IsSuccess) return NotFound(student.Error);
+            if (!response.IsSuccess) return NotFound(response.Error);
 
-            StudentList response = _mapper.Map<StudentList>(student.Data);
+            StudentList student = _mapper.Map<StudentList>(response.Data);
 
-            return Ok(response);
+            return Ok(student);
         }
 
         [Authorize(Roles = "Admin")]
@@ -47,9 +48,13 @@ namespace StudentGradebookApi.Controllers
         {
             var response = await _studentService.AddStudentAsync(studentData);
 
-            if(!response.IsSuccess) return BadRequest(response.Error);
+            if(response.IsSuccess) return Ok();
 
-            return Ok();
+            return response.Error.Code switch
+            {
+                "user.email.exists" => Conflict(response.Error.Message),
+                _ => BadRequest(response.Error.Message)
+            };
         }
 
         [Authorize(Roles = "Admin")]
@@ -58,9 +63,13 @@ namespace StudentGradebookApi.Controllers
         {
             var response = await _studentService.EditStudentAsync(studentData, id);
 
-            if (!response.IsSuccess) return BadRequest(response.Error);
+            if (response.IsSuccess) return Ok();
 
-            return Ok(response);
+            return response.Error.Code switch
+            {
+                "student.not.found" => NotFound(response.Error.Message),
+                _ => BadRequest(response.Error.Message)
+            };
         }
 
         [Authorize(Roles = "Admin")]
@@ -68,11 +77,14 @@ namespace StudentGradebookApi.Controllers
         public async Task<ActionResult> DeleteStudent(int id)
         {
             var response = await _studentService.DeleteStudentAsync(id);
-            if(!response.IsSuccess)
+
+            if (response.IsSuccess) return Ok();
+
+            return response.Error.Code switch
             {
-                return NotFound(response.Error);
-            }
-            return Ok();
+                "student.not.found" => NotFound(response.Error.Message),
+                _ => BadRequest(response.Error.Message)
+            };
         }
     }
 }

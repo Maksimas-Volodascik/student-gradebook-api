@@ -21,7 +21,9 @@ namespace StudentGradebookApi.Services.GradesServices
             if (!valid.IsSuccess) return Result.Failure(valid.Error);
 
             Grades grade = await _gradesRepository.GetGradeByDateAndEnrollmentId(newGrade.gradingDate.Date, newGrade.enrollmentId);
-            //TODO: test grade that does not exist
+
+            if (grade == null) return Result.Failure(Errors.GradeErrors.GradeNotFound);
+
             grade.Grade_Type = newGrade.gradeType;
             grade.Score = newGrade.score;
 

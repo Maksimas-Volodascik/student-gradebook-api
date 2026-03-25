@@ -1,6 +1,6 @@
 ﻿namespace StudentGradebookApi.Shared
 {
-    public class Errors
+    public class Errors //string Code, string? Field, string Message
     {
         public static class GenericErrors
         {
