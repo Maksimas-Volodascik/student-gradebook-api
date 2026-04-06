@@ -1,11 +1,19 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage;
+using NuGet.Protocol;
+using StackExchange.Redis;
 using StudentGradebookApi.DTOs.Grades;
 using StudentGradebookApi.Models;
 using StudentGradebookApi.Repositories.GradesRepository;
 using StudentGradebookApi.Services.GradesServices;
 using StudentGradebookApi.Shared;
+using System.Diagnostics;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,17 +26,38 @@ namespace StudentGradebookApi.Controllers
     public class GradesController : ControllerBase
     {
         private readonly IGradesServices _gradesService;
-        public GradesController(IGradesServices gradesServices) { 
+        private readonly StackExchange.Redis.IDatabase _redis;
+
+        public GradesController(IGradesServices gradesServices, IConnectionMultiplexer muxer) { 
             _gradesService = gradesServices;
+            _redis = muxer.GetDatabase();
         }
 
         [Authorize(Roles = "Student,Teacher,Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StudentGradesBySubjectDto>>> GetStudentGrades([FromQuery] GradesQueryDto queryDto)
         {
-            var studentGrades = await _gradesService.GetStudentGradesBySubjectId(queryDto);
+            var serializedQuery = JsonSerializer.Serialize(queryDto);
+            var queryHash = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(serializedQuery)));
 
-            return Ok(studentGrades.Data);
+            var keyName = $"query:{queryHash}";
+            string json = await _redis.StringGetAsync(keyName);
+
+            if (string.IsNullOrEmpty(json))
+            {
+                var studentData = await _gradesService.GetStudentGradesBySubjectId(queryDto);
+                json = JsonSerializer.Serialize(studentData.Data);
+
+                var setTask = _redis.StringSetAsync(keyName, json);
+                var expireTask = _redis.KeyExpireAsync(keyName, TimeSpan.FromSeconds(3600));
+
+                await Task.WhenAll(setTask, expireTask); //await both tasks in Parallel
+            }
+
+            var studentGrades = JsonSerializer.Deserialize<IEnumerable<StudentGradesBySubjectDto>>(json);
+            //var studentGrades = await _gradesService.GetStudentGradesBySubjectId(queryDto);
+
+            return Ok(studentGrades);
         }
 
         [Authorize(Roles = "Teacher,Admin")]

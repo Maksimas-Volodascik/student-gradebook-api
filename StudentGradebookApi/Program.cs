@@ -63,6 +63,10 @@ namespace StudentGradebookApi
                 opt.LowercaseUrls = true;
             });
 
+            // Redis caching
+            builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+            builder.Services.AddHttpClient();
+
             // Database
             builder.Services.AddDbContext<SchoolDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -94,10 +98,6 @@ namespace StudentGradebookApi
                 .CreateLogger();
 
             builder.Host.UseSerilog();
-
-            ////Redis cache
-            //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
-            //builder.Services.AddHttpClient();
 
             builder.Services.AddCustomRateLimiting(); //Rate Limit
             
