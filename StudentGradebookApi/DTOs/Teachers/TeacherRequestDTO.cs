@@ -1,6 +1,6 @@
 ﻿namespace StudentGradebookApi.DTOs.Teachers
 {
-    public class TeacherRequestDto
+    public class TeacherRequestDTO
     {
         //DTO For 'Create Teacher' and 'Edit Teacher'
         public string Email { get; set; } = string.Empty;

@@ -9,8 +9,8 @@ namespace StudentGradebookApi.Services.TeacherServices
     {
         Task<Result<IEnumerable<TeacherDto>>> GetAllTeachersAsync(TeachersQueryDto queryDto);
         Task<Result<Teachers>> GetTeacherByIdAsync(int id);
-        Task<Result> AddTeacherAsync(TeacherRequestDto teacherData);
-        Task<Result> EditTeacherAsync(int teacherId, TeacherRequestDto teacher);
+        Task<Result> AddTeacherAsync(TeacherRequestDTO teacherData);
+        Task<Result> EditTeacherAsync(int teacherId, TeacherRequestDTO teacher);
         Task<Result> DeleteTeacherAsync(int id);
     }
 }

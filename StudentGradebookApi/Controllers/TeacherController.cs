@@ -31,7 +31,7 @@ namespace StudentGradebookApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult> AddNewTeacher(TeacherRequestDto newTeacher)
+        public async Task<ActionResult> AddNewTeacher(TeacherRequestDTO newTeacher)
         {
             var response = await _teacherService.AddTeacherAsync(newTeacher);
 
@@ -42,7 +42,7 @@ namespace StudentGradebookApi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPatch("{id}")]
-        public async Task<ActionResult> EditTeacher(int id, TeacherRequestDto teacher)
+        public async Task<ActionResult> EditTeacher(int id, TeacherRequestDTO teacher)
         {
             var response = await _teacherService.EditTeacherAsync(id, teacher);
 

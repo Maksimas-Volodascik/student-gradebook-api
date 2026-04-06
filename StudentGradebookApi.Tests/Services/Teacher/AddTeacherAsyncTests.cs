@@ -31,9 +31,9 @@ namespace StudentGradebookApi.Tests.Services.Teacher
 
         public static class TeacherDTOBuilder
         {
-            public static TeacherRequestDto Build()
+            public static TeacherRequestDTO Build()
             {
-                return new TeacherRequestDto
+                return new TeacherRequestDTO
                 {
                     Email = "email@email.com",
                     Password = "password123",
