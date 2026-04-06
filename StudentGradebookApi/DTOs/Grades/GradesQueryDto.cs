@@ -1,10 +1,10 @@
 ﻿using StudentGradebookApi.DTOs.SharedDto;
+using System.Text.Json.Serialization;
 
 namespace StudentGradebookApi.DTOs.Grades
 {
     public class GradesQueryDto : QueryDto
     {
-        //Filters
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public int ClassSubjectId { get; set; } = 1;
